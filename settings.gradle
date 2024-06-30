@@ -1,0 +1,6 @@
+rootProject.name = 'toy'
+include 'core'
+include 'domain'
+include 'client'
+include 'api'
+

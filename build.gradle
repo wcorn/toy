@@ -1,0 +1,12 @@
+subprojects {
+   group = 'ds.project'
+    version = '0.0.1-SNAPSHOT'
+}
+project(':core'){
+}
+project(':domain'){
+}
+project(':client'){
+}
+project(':api'){
+}
