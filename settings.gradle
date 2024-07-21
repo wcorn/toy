@@ -1,6 +1,5 @@
 rootProject.name = 'toy'
 include 'core'
 include 'domain'
-include 'system'
+include 'system', 'system:core-web', 'system:core-web:api-core'
 include 'api'
-
