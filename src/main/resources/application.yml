@@ -1,0 +1,12 @@
+server:
+  port: 10001
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: toy
+  profiles:
+    active: local
+    include:
+      - openapi
