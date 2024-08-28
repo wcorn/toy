@@ -11,3 +11,5 @@ spring:
     include:
       - openapi
       - vault
+      - mysql
+      - redis

@@ -49,6 +49,14 @@ dependencies {
 
   //vault
   implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+
+  // DB
+  implementation 'com.mysql:mysql-connector-j'
+  implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+  testImplementation 'com.h2database:h2'
+
+  // redis
+  implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
 
 dependencyManagement {
