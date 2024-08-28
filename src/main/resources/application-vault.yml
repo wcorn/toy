@@ -1,0 +1,34 @@
+spring:
+  config:
+    activate:
+      on-profile: local
+  cloud:
+    vault:
+      enabled: false
+
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+  cloud:
+    vault:
+      enabled: false
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+    import: vault://
+  cloud:
+    vault:
+      token: ${VAULT_TOKEN}
+      scheme: http
+      host: ${VAULT_URL}
+      port: ${VAULT_PORT}
+      kv:
+        enabled: true
+        backend: secret
+        profiles:
+        application-name: toy
