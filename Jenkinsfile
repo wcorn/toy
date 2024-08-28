@@ -6,6 +6,9 @@ pipeline {
     agent any
     environment {
         DISCORD_WEBHOOK = credentials('discord-webhook')
+        VAULT_TOKEN = credentials('vault-token')
+        VAULT_URL = credentials('vault-url')
+        VAULT_PORT = credentials('vault-port')
     }
     stages {
         stage('Checkout') {
@@ -49,7 +52,12 @@ pipeline {
                     sh """
                         docker stop ${env.CONTAINER_NAME} || true
                         docker rm ${env.CONTAINER_NAME} || true
-                        docker run -d --name ${env.CONTAINER_NAME} -p ${env.PORT}:${env.PORT} ${env.IMAGE_NAME}:${env.BUILD_NUMBER}
+                        docker run -d --name ${env.CONTAINER_NAME} \\
+                            -e VAULT_TOKEN=${VAULT_TOKEN} \\
+                            -e VAULT_URL=${VAULT_URL} \\
+                            -e VAULT_PORT=${VAULT_PORT} \\
+                            -p ${env.PORT}:${env.PORT} \\
+                            ${env.IMAGE_NAME}:${env.BUILD_NUMBER}
                     """
 
                     retries = 6
@@ -77,7 +85,12 @@ pipeline {
                         docker stop ${env.CONTAINER_NAME} || true
                         docker rm ${env.CONTAINER_NAME} || true
                         docker rmi ${env.IMAGE_NAME}:${env.BUILD_NUMBER} || true
-                        docker run -d --name ${env.CONTAINER_NAME} -p ${env.PORT}:${env.PORT} ${env.IMAGE_NAME}:${PREVIOUS_TAG} || true
+                        docker run -d --name ${env.CONTAINER_NAME} \\
+                            -e VAULT_TOKEN=${VAULT_TOKEN} \\
+                            -e VAULT_URL=${VAULT_URL} \\
+                            -e VAULT_PORT=${VAULT_PORT} \\
+                            -p ${env.PORT}:${env.PORT} \\
+                            ${env.IMAGE_NAME}:${PREVIOUS_TAG} || true
                     """
                 }
                 notifyDiscord('Failure', "Failed at stage: ${CURRENT_STAGE}")
