@@ -57,6 +57,7 @@ pipeline {
                             -e VAULT_URL=${VAULT_URL} \\
                             -e VAULT_PORT=${VAULT_PORT} \\
                             -p ${env.PORT}:${env.PORT} \\
+                            -p ${env.MON_PORT}:${env.MON_PORT} \\
                             ${env.IMAGE_NAME}:${env.BUILD_NUMBER}
                     """
 
@@ -64,7 +65,7 @@ pipeline {
                     healthStatus = ''
                     for (int i = 0; i < retries; i++) {
                         sleep(30)
-                        healthStatus = sh(script: "curl -s -o /dev/null -w '%{http_code}' ${env.BASE_URL}:${env.PORT}${env.HEALTHCHECK_PATH}", returnStdout: true).trim()
+                        healthStatus = sh(script: "curl -s -o /dev/null -w '%{http_code}' ${env.BASE_URL}:${env.MON_PORT}${env.HEALTHCHECK_PATH}", returnStdout: true).trim()
                         if (healthStatus == '200') {
                             break;
                         }
@@ -90,6 +91,7 @@ pipeline {
                             -e VAULT_URL=${VAULT_URL} \\
                             -e VAULT_PORT=${VAULT_PORT} \\
                             -p ${env.PORT}:${env.PORT} \\
+                            -p ${env.MON_PORT}:${env.MON_PORT} \\
                             ${env.IMAGE_NAME}:${PREVIOUS_TAG} || true
                     """
                 }
