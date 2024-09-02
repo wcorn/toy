@@ -56,6 +56,7 @@ pipeline {
                             -e VAULT_TOKEN=${VAULT_TOKEN} \\
                             -e VAULT_URL=${VAULT_URL} \\
                             -e VAULT_PORT=${VAULT_PORT} \\
+                            -v ${env.TOY_VOLUME}:/var/log/spring \\
                             -p ${env.PORT}:${env.PORT} \\
                             -p ${env.MON_PORT}:${env.MON_PORT} \\
                             ${env.IMAGE_NAME}:${env.BUILD_NUMBER}
@@ -90,6 +91,7 @@ pipeline {
                             -e VAULT_TOKEN=${VAULT_TOKEN} \\
                             -e VAULT_URL=${VAULT_URL} \\
                             -e VAULT_PORT=${VAULT_PORT} \\
+                            -v ${env.TOY_VOLUME}:/var/log/spring \\
                             -p ${env.PORT}:${env.PORT} \\
                             -p ${env.MON_PORT}:${env.MON_PORT} \\
                             ${env.IMAGE_NAME}:${PREVIOUS_TAG} || true
