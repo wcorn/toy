@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+  <include resource="error-appender.xml"/>
+  <include resource="warn-appender.xml"/>
+  <include resource="info-appender.xml"/>
+  <root>
+    <appender-ref ref="INFO"/>
+    <appender-ref ref="ERROR"/>
+    <appender-ref ref="WARN"/>
+  </root>
+</configuration>

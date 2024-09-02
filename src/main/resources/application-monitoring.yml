@@ -2,7 +2,6 @@ spring:
   config:
     activate:
       on-profile:
-        - local
         - dev
 management:
     endpoints:
@@ -35,3 +34,5 @@ server:
   tomcat:
     mbeanregistry:
       enabled: true
+logging:
+  config: classpath:logback-dev.xml
