@@ -1,0 +1,29 @@
+spring:
+  config:
+    activate:
+      on-profile: local
+security:
+  key: SC2Jt8VlJINgebythzvXS3ydaZvD53IfbYVrdR4vcmc29w1SNAfQJxeH7ptuWV
+  access-token-minute: 30
+  refresh-token-day: 14
+  cors-urls: http://localhost:${PORT}/**
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+security:
+  key: wi3jwOUwsVqKeYWAYKJlHHCRUSrBg79p2uER93rq72hog65YTv1X5eQyOYei2d
+  access-token-minute: 30
+  refresh-token-day: 14
+  cors-urls: http://localhost:${PORT}/**
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+security:
+  key: ${SECRET_KEY}
+  access-token-minute: 30
+  refresh-token-day: 14
+  cors-urls: ${ADDRESS}:${PORT}/**

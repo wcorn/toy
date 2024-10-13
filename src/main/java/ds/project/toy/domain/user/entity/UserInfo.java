@@ -54,4 +54,13 @@ public class UserInfo {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
+
+    public static UserInfo createGuest() {
+        return UserInfo.builder()
+            .role(UserInfoRole.ROLE_GUEST)
+            .createdAt(LocalDateTime.now())
+            .updatedAt(LocalDateTime.now())
+            .state(UserInfoState.ACTIVE)
+            .build();
+    }
 }
