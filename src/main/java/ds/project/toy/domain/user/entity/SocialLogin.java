@@ -2,6 +2,7 @@ package ds.project.toy.domain.user.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -26,7 +27,7 @@ public class SocialLogin {
     private UserInfo userInfo;
     @Column(name = "social_id")
     private String socialId;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "provider")
     private SocialProvider provider;
 
@@ -36,5 +37,14 @@ public class SocialLogin {
         this.userInfo = userInfo;
         this.socialId = socialId;
         this.provider = provider;
+    }
+
+    public static SocialLogin create(UserInfo userInfo, SocialProvider socialProvider,
+        String socialId) {
+        return SocialLogin.builder()
+            .provider(socialProvider)
+            .userInfo(userInfo)
+            .socialId(socialId)
+            .build();
     }
 }
