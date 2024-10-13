@@ -1,0 +1,11 @@
+spring:
+  profiles:
+    include:
+      - openapi
+      - vault
+      - mysql
+      - redis
+      - monitoring
+      - oauth
+      - security
+    active: test
