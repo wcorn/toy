@@ -1,9 +1,12 @@
 package ds.project.toy.domain.user.entity;
 
-import ds.project.toy.domain.user.vo.Provider;
+import static jakarta.persistence.EnumType.STRING;
+
+import ds.project.toy.global.common.vo.OAuth2Provider;
 import ds.project.toy.domain.user.vo.SocialProviderState;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -17,13 +20,15 @@ public class SocialProvider {
 
     @Id
     @Column(name = "provider")
-    private Provider provider;
+    @Enumerated(STRING)
+    private OAuth2Provider provider;
     @Column(name = "state")
+    @Enumerated(STRING)
     private SocialProviderState state;
 
     @Builder
-    private SocialProvider(Provider provider, SocialProviderState state) {
-        this.provider = provider;
+    private SocialProvider(OAuth2Provider OAuth2Provider, SocialProviderState state) {
+        this.provider = OAuth2Provider;
         this.state = state;
     }
 }
