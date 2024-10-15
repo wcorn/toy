@@ -47,4 +47,12 @@ public class SocialLogin {
             .socialId(socialId)
             .build();
     }
+
+    public static SocialLogin of(SocialProvider provider, String id, UserInfo userInfo) {
+        return SocialLogin.builder()
+            .provider(provider)
+            .userInfo(userInfo)
+            .socialId(id)
+            .build();
+    }
 }

@@ -27,8 +27,15 @@ public class SocialProvider {
     private SocialProviderState state;
 
     @Builder
-    private SocialProvider(OAuth2Provider OAuth2Provider, SocialProviderState state) {
-        this.provider = OAuth2Provider;
+    private SocialProvider(OAuth2Provider oAuth2Provider, SocialProviderState state) {
+        this.provider = oAuth2Provider;
         this.state = state;
+    }
+
+    public static SocialProvider of(OAuth2Provider provider, SocialProviderState state) {
+        return SocialProvider.builder()
+            .oAuth2Provider(provider)
+            .state(state)
+            .build();
     }
 }

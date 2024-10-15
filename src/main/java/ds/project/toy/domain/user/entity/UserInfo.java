@@ -63,4 +63,16 @@ public class UserInfo {
             .state(UserInfoState.ACTIVE)
             .build();
     }
+
+    public static UserInfo of(String nickname, String email,
+        UserInfoRole role, UserInfoState state) {
+        return UserInfo.builder()
+            .email(email)
+            .nickname(nickname)
+            .createdAt(LocalDateTime.now())
+            .updatedAt(LocalDateTime.now())
+            .role(role)
+            .state(state)
+            .build();
+    }
 }
