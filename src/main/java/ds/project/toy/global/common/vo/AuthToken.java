@@ -1,6 +1,5 @@
 package ds.project.toy.global.common.vo;
 
-import ds.project.toy.domain.user.vo.UserInfoRole;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +12,6 @@ public class AuthToken {
 
     private String accessToken;
     private String refreshToken;
-    private UserInfoRole userInfoRole;
 
     @Builder
     public AuthToken(String accessToken, String refreshToken) {
@@ -28,7 +26,4 @@ public class AuthToken {
             .build();
     }
 
-    public void setRole(UserInfoRole userInfoRole) {
-        this.userInfoRole = userInfoRole;
-    }
 }

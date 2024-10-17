@@ -13,9 +13,11 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 public class OAuth2UserImpl implements OAuth2User {
 
     private final OAuth2UserInfo userInfo;
+    private final Long userId;
 
-    public OAuth2UserImpl(OAuth2UserInfo userInfo) {
+    public OAuth2UserImpl(OAuth2UserInfo userInfo, Long userId) {
         this.userInfo = userInfo;
+        this.userId = userId;
     }
 
     @Override
@@ -30,7 +32,7 @@ public class OAuth2UserImpl implements OAuth2User {
 
     @Override
     public String getName() {
-        return userInfo.getId();
+        return String.valueOf(userId);
     }
 
 }
