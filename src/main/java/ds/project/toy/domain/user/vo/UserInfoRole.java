@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum UserInfoRole {
-    ROLE_GUEST("GUEST"),
     ROLE_USER("USER"),
     ROLE_ADMIN("ADMIN");
     private final String name;

@@ -15,11 +15,13 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 @Entity(name = "user_info")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
 @Getter
 public class UserInfo {
 
@@ -55,9 +57,11 @@ public class UserInfo {
         this.updatedAt = updatedAt;
     }
 
-    public static UserInfo createGuest() {
+    public static UserInfo creatUser(String email, String nickname) {
         return UserInfo.builder()
-            .role(UserInfoRole.ROLE_GUEST)
+            .email(email)
+            .nickname(nickname)
+            .role(UserInfoRole.ROLE_USER)
             .createdAt(LocalDateTime.now())
             .updatedAt(LocalDateTime.now())
             .state(UserInfoState.ACTIVE)
