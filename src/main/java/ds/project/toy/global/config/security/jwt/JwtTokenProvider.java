@@ -2,11 +2,18 @@ package ds.project.toy.global.config.security.jwt;
 
 import static io.jsonwebtoken.Jwts.builder;
 
+import ds.project.toy.global.common.exception.CustomException;
+import ds.project.toy.global.common.exception.ResponseCode;
 import ds.project.toy.global.common.vo.AuthToken;
 import ds.project.toy.global.common.vo.RedisPrefix;
 import ds.project.toy.global.util.RedisUtil;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
@@ -73,5 +80,23 @@ public class JwtTokenProvider {
             .expiration(Timestamp.valueOf(time.plusDays(refreshTokenValidityInDay)))
             .signWith(secretKey)
             .compact();
+    }
+
+    private Claims verifyToken(String token) {
+        try {
+            Jws<Claims> claimsJws = jwtParser.parseSignedClaims(token);
+            return claimsJws.getPayload();
+        } catch (ExpiredJwtException e) {
+            throw new CustomException(ResponseCode.EXPIRED_TOKEN);
+        } catch (UnsupportedJwtException e) {
+            throw new CustomException(ResponseCode.UNSUPPORTED_TOKEN);
+        } catch (MalformedJwtException | SecurityException | IllegalArgumentException e) {
+            throw new CustomException(ResponseCode.INVALID_TOKEN);
+        }
+    }
+
+    public String getUserIdFromRefreshToken(String refreshToken) {
+        Claims claims = verifyToken(refreshToken);
+        return claims.getSubject();
     }
 }
