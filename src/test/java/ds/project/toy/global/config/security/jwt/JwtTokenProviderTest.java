@@ -14,15 +14,15 @@ import org.junit.jupiter.api.Test;
 
 class JwtTokenProviderTest extends IntegrationTestSupport {
 
-    @DisplayName("엑세스 토큰과 리프레시 토큰을 생성한다.")
+    @DisplayName("엑세스 토큰과 리프레시 토큰을 생성하고 저장한다.")
     @Test
-    void createToken() {
+    void createTokenAndStore() {
         //given
         String id = "id";
         Duration expectedDuration = Duration.ofDays(14); // refreshTokenValidityInDay는 해당 값에 맞춰 설정
 
         //when
-        AuthToken authToken = jwtTokenProvider.createToken(id);
+        AuthToken authToken = jwtTokenProvider.createTokenAndStore(id);
 
         //then
         assertThat(authToken).isNotNull();

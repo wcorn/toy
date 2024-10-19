@@ -1,7 +1,6 @@
 package ds.project.toy.global.config.security.oauth.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ds.project.toy.global.common.exception.ResponseCode;
 import ds.project.toy.global.common.vo.AuthToken;
 import ds.project.toy.global.config.security.jwt.JwtTokenProvider;
 import ds.project.toy.global.config.security.oauth.user.core.OAuth2UserImpl;
@@ -42,7 +41,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     }
 
     private AuthToken generateAuthToken(Long userId) {
-        return jwtTokenProvider.createToken(String.valueOf(userId));
+        return jwtTokenProvider.createTokenAndStore(String.valueOf(userId));
     }
 
     private void respondWithToken(HttpServletResponse response, AuthToken authToken)

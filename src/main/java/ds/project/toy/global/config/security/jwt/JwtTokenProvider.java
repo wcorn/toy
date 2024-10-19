@@ -3,9 +3,13 @@ package ds.project.toy.global.config.security.jwt;
 import static io.jsonwebtoken.Jwts.builder;
 
 import ds.project.toy.global.common.vo.AuthToken;
+import ds.project.toy.global.common.vo.RedisPrefix;
 import ds.project.toy.global.util.RedisUtil;
+import io.jsonwebtoken.JwtParser;
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SecurityException;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -26,6 +30,7 @@ public class JwtTokenProvider {
     private final long accessTokenValidityInMinute;
     private final long refreshTokenValidityInDay;
     private final RedisUtil redisUtil;
+    private final JwtParser jwtParser;
 
     public JwtTokenProvider(
         @Value("${security.access-token-minute}") long accessTokenMinute,
@@ -35,9 +40,10 @@ public class JwtTokenProvider {
         this.accessTokenValidityInMinute = accessTokenMinute;
         this.refreshTokenValidityInDay = refreshTokenDay;
         this.redisUtil = redisUtil;
+        this.jwtParser = Jwts.parser().verifyWith(secretKey).build();
     }
 
-    public AuthToken createToken(String id) {
+    public AuthToken createTokenAndStore(String id) {
         LocalDateTime now = LocalDateTime.now();
         AuthToken authTokens = AuthToken.of(createAccessToken(id),
             createRefreshToken(now, id));
