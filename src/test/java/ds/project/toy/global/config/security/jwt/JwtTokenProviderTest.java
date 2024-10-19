@@ -7,6 +7,7 @@ import static org.mockito.Mockito.times;
 
 import ds.project.toy.IntegrationTestSupport;
 import ds.project.toy.global.common.vo.AuthToken;
+import ds.project.toy.global.common.vo.RedisPrefix;
 import java.time.Duration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,7 @@ class JwtTokenProviderTest extends IntegrationTestSupport {
         assertThat(authToken.getRefreshToken()).isNotNull();
         then(redisUtil).should(times(1))
             .setValueWithExpire(
+                eq(RedisPrefix.TOKEN),
                 eq(authToken.getRefreshToken()),
                 eq(authToken.getAccessToken()),
                 eq(expectedDuration)

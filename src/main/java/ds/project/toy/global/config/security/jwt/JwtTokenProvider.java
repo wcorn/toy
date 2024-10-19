@@ -41,7 +41,9 @@ public class JwtTokenProvider {
         LocalDateTime now = LocalDateTime.now();
         AuthToken authTokens = AuthToken.of(createAccessToken(id),
             createRefreshToken(now, id));
-        redisUtil.setValueWithExpire(authTokens.getRefreshToken(), authTokens.getAccessToken(),
+        redisUtil.setValueWithExpire(RedisPrefix.TOKEN,
+            authTokens.getRefreshToken(),
+            authTokens.getAccessToken(),
             Duration.ofDays(refreshTokenValidityInDay));
         return authTokens;
     }
