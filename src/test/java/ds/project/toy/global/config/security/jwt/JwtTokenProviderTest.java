@@ -36,4 +36,20 @@ class JwtTokenProviderTest extends IntegrationTestSupport {
                 eq(expectedDuration)
             );
     }
+
+    @DisplayName(value = "리프레시 토큰으로 유저아이디를 조회한다.")
+    @Test
+    public void getUserIdFromRefreshToken() {
+        //given
+        String userId = "id";
+        AuthToken authToken = jwtTokenProvider.createTokenAndStore(userId);
+
+        //when
+        String fromTokenId = jwtTokenProvider.getUserIdFromRefreshToken(
+            authToken.getRefreshToken());
+
+        //then
+        assertThat(fromTokenId).isEqualTo(userId);
+    }
+
 }
