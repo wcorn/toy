@@ -8,4 +8,5 @@ spring:
       - monitoring
       - oauth
       - security
+      - minio
     active: test
