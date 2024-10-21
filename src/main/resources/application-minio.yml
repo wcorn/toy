@@ -1,0 +1,7 @@
+minio:
+  url: ${ADDRESS}:${MINIO_PORT}
+  access:
+    name: ${MINIO_ACCESS}
+    secret: ${MINIO_SECRET}
+  bucket:
+    name: image

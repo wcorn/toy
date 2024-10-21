@@ -16,3 +16,4 @@ spring:
       - monitoring
       - oauth
       - security
+      - minio
