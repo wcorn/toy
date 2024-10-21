@@ -8,6 +8,7 @@ import ds.project.toy.domain.user.repository.SocialProviderRepository;
 import ds.project.toy.domain.user.repository.UserInfoRepository;
 import ds.project.toy.global.config.security.jwt.JwtTokenProvider;
 import ds.project.toy.global.util.RedisUtil;
+import io.minio.MinioClient;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +20,9 @@ public abstract class IntegrationTestSupport {
 
     @MockBean
     protected RedisUtil redisUtil;
+    @MockBean
+    protected MinioClient minioClient;
+
     @Autowired
     protected PasswordEncoder passwordEncoder;
     @Autowired

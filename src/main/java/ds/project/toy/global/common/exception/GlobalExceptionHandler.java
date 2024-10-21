@@ -1,5 +1,6 @@
 package ds.project.toy.global.common.exception;
 
+import io.minio.errors.MinioException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -50,9 +51,19 @@ public class GlobalExceptionHandler {
             .body(errorResponse);
     }
 
+    @ExceptionHandler(MinioException.class)
+    public ResponseEntity<ErrorResponse> minioError(MinioException e) {
+        log.error("minio error: {}", e.getMessage());
+        final ErrorResponse errorResponse = ErrorResponse.of(
+            ResponseCode.INTERNAL_SERVER_ERROR, e.getMessage());
+        return ResponseEntity
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(errorResponse);
+    }
+
     //validation exception 처리
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> processValidationError(MethodArgumentNotValidException e){
+    public ResponseEntity<ErrorResponse> processValidationError(MethodArgumentNotValidException e) {
         log.error("processValidationError: {}", e.getMessage());
         final ErrorResponse errorResponse = ErrorResponse.of(ResponseCode.BAD_REQUEST,
             e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
@@ -73,13 +84,15 @@ public class GlobalExceptionHandler {
 
     //잘못된 자료형으로 인한 에러
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadable(HttpMessageNotReadableException e) {
-        final ErrorResponse errorResponse = ErrorResponse.of(ResponseCode.BAD_REQUEST,e);
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadable(
+        HttpMessageNotReadableException e) {
+        final ErrorResponse errorResponse = ErrorResponse.of(ResponseCode.BAD_REQUEST, e);
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
             .body(errorResponse);
 
     }
+
     //지원하지 않는 media type 에러
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public ResponseEntity<ErrorResponse> httpMediaTypeNotSupportedExceptionError(
