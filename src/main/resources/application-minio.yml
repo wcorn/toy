@@ -1,3 +1,9 @@
+spring:
+  config:
+    activate:
+      on-profile:
+        - dev
+        - local
 minio:
   url: ${ADDRESS}:${MINIO_PORT}
   access:
@@ -5,3 +11,17 @@ minio:
     secret: ${MINIO_SECRET}
   bucket:
     name: image
+---
+spring:
+  config:
+    activate:
+      on-profile:
+        - test
+minio:
+  url: http://localhost:9000
+  access:
+    name: test-access
+    secret: test-secret
+  bucket:
+    name: test-bucket
+---
