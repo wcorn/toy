@@ -64,6 +64,8 @@ public class SecurityConfig {
                     "/swagger-resources/**", "/api-docs/**").permitAll()
                 .requestMatchers("/login/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth/token/reissue").permitAll()
+                //todo jwt filter 개발 후 hasrole 설정
+                .requestMatchers( "/member/**").permitAll()
                 .anyRequest().authenticated()
             )
 
