@@ -2,6 +2,7 @@ package ds.project.toy;
 
 
 import ds.project.toy.api.service.auth.AuthService;
+import ds.project.toy.api.service.user.UserService;
 import ds.project.toy.domain.user.repository.AdminLoginRepository;
 import ds.project.toy.domain.user.repository.SocialLoginRepository;
 import ds.project.toy.domain.user.repository.SocialProviderRepository;
@@ -30,6 +31,8 @@ public abstract class IntegrationTestSupport {
 
     @Autowired
     protected AuthService authService;
+    @Autowired
+    protected UserService userService;
 
     @Autowired
     protected AdminLoginRepository adminLoginRepository;
