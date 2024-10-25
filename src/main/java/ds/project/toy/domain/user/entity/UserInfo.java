@@ -57,6 +57,16 @@ public class UserInfo {
         this.updatedAt = updatedAt;
     }
 
+    public UserInfo(UserInfo userInfo) {
+        this.userId = userInfo.getUserId();
+        this.nickname = userInfo.getNickname();
+        this.email = userInfo.getEmail();
+        this.role = userInfo.getRole();
+        this.state = userInfo.getState();
+        this.createdAt = userInfo.getCreatedAt();
+        this.updatedAt = userInfo.getUpdatedAt();
+    }
+
     public static UserInfo creatUser(String email, String nickname) {
         return UserInfo.builder()
             .email(email)
@@ -78,5 +88,9 @@ public class UserInfo {
             .role(role)
             .state(state)
             .build();
+    }
+
+    public void changeNickname(String nickname) {
+        this.nickname = nickname;
     }
 }
