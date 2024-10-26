@@ -95,7 +95,7 @@ public class JwtTokenProvider {
         }
     }
 
-    public String getUserIdFromRefreshToken(String refreshToken) {
+    public String getUserIdFromToken(String refreshToken) {
         Claims claims = verifyToken(refreshToken);
         return claims.getSubject();
     }

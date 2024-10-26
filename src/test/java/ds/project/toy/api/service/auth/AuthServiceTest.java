@@ -27,8 +27,8 @@ class AuthServiceTest extends IntegrationTestSupport {
         //then
         assertThat(response).isNotNull();
         assertThat(
-            jwtTokenProvider.getUserIdFromRefreshToken(authToken.getAccessToken())).isEqualTo(
-            jwtTokenProvider.getUserIdFromRefreshToken(response.getAccessToken()));
+            jwtTokenProvider.getUserIdFromToken(authToken.getAccessToken())).isEqualTo(
+            jwtTokenProvider.getAuthentication(response.getAccessToken()).getName());
     }
 
     @DisplayName(value = "redis에 토큰이 안되어 있다면 토큰 재생성 시 예외가 발생한다.")

@@ -45,7 +45,7 @@ class JwtTokenProviderTest extends IntegrationTestSupport {
         AuthToken authToken = jwtTokenProvider.createTokenAndStore(userId);
 
         //when
-        String fromTokenId = jwtTokenProvider.getUserIdFromRefreshToken(
+        String fromTokenId = jwtTokenProvider.getUserIdFromToken(
             authToken.getRefreshToken());
 
         //then

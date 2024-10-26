@@ -24,7 +24,7 @@ public class AuthServiceImpl implements AuthService {
         if (!redisUtil.hasKey(RedisPrefix.TOKEN, dto.getRefreshToken())) {
             throw new CustomException(ResponseCode.INVALID_TOKEN);
         }
-        String userName = jwtTokenProvider.getUserIdFromRefreshToken(
+        String userName = jwtTokenProvider.getUserIdFromToken(
             dto.getRefreshToken());
         redisUtil.deleteValue(RedisPrefix.TOKEN, dto.getRefreshToken());
         return jwtTokenProvider.createTokenAndStore(userName);
