@@ -27,12 +27,13 @@ public enum ResponseCode {
     private final String message;
 
     public String getMessage(Throwable e) {
-        return this.getMessage(this.getMessage() + " - " + e.getMessage());
+        return this.message + " - " + e.getMessage();
     }
 
-    public String getMessage(String message) {
-        return Optional.ofNullable(message)
+    public String getMessage(String additionalMessage) {
+        return Optional.ofNullable(additionalMessage)
             .filter(Predicate.not(String::isBlank))
-            .orElse(this.getMessage());
+            .map(msg -> this.message + " - " + msg)
+            .orElse(this.message);
     }
 }

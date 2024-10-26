@@ -1,5 +1,7 @@
 package ds.project.toy.global.config.security;
 
+import ds.project.toy.domain.user.vo.UserInfoRole;
+import ds.project.toy.global.config.security.jwt.JwtAuthenticationCheckFilter;
 import ds.project.toy.global.config.security.jwt.JwtAuthenticationEntryPoint;
 import ds.project.toy.global.config.security.oauth.handler.OAuth2AuthenticationFailureHandler;
 import ds.project.toy.global.config.security.oauth.handler.OAuth2AuthenticationSuccessHandler;
@@ -17,6 +19,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -28,13 +31,14 @@ public class SecurityConfig {
 
     @Value("${security.cors-urls}")
     private final List<String> corsUrls;
+    private final JwtAuthenticationCheckFilter jwtAuthorizationFilter;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final OAuth2UserServiceImpl oAuth2UserService;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
 
     @Bean
-    public SecurityFilterChain filterChain(
-        HttpSecurity http, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
-        OAuth2UserServiceImpl oAuth2UserService,
-        OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler,
-        OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler)
+    public SecurityFilterChain filterChain(HttpSecurity http)
         throws Exception {
         http
             .cors(
@@ -64,10 +68,10 @@ public class SecurityConfig {
                     "/swagger-resources/**", "/api-docs/**").permitAll()
                 .requestMatchers("/login/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth/token/reissue").permitAll()
-                //todo jwt filter 개발 후 hasrole 설정
-                .requestMatchers( "/member/**").permitAll()
+                .requestMatchers("/member/**").hasRole(UserInfoRole.ROLE_USER.getName())
                 .anyRequest().authenticated()
             )
+            .addFilterAfter(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
 
         ;
         return http.build();

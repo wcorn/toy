@@ -9,11 +9,13 @@ import ds.project.toy.api.controller.user.dto.request.ChangeNicknameRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 
 class UserControllerTest extends ControllerTestSupport {
 
     @DisplayName(value = "닉네임을 변경한다.")
     @Test
+    @WithMockUser(roles = "USER", username = "1")
     public void changeNickname() throws Exception {
         //given
         String nickname = "nickname";
