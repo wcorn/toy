@@ -6,6 +6,8 @@ import ds.project.toy.api.service.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,8 +21,10 @@ public class UserController {
     private final UserService userService;
 
     @PatchMapping("/nickname")
-    public ResponseEntity<ChangeNicknameResponse> changeNickname(@Valid @RequestBody ChangeNicknameRequest request) {
-        //todo jwt filter 개발 후 token에서 user 정보 가져오기
-        return ResponseEntity.ok(userService.changeNickname(request.toServiceDto(1L)));
+    public ResponseEntity<ChangeNicknameResponse> changeNickname(
+        @Valid @RequestBody ChangeNicknameRequest request) {
+        Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
+        Long memberId = Long.parseLong(loggedInUser.getName());
+        return ResponseEntity.ok(userService.changeNickname(request.toServiceDto(memberId)));
     }
 }

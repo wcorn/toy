@@ -6,6 +6,9 @@ import static org.mockito.BDDMockito.given;
 
 import ds.project.toy.IntegrationTestSupport;
 import ds.project.toy.api.service.auth.dto.ReissuedTokenServiceDto;
+import ds.project.toy.domain.user.entity.UserInfo;
+import ds.project.toy.domain.user.vo.UserInfoRole;
+import ds.project.toy.domain.user.vo.UserInfoState;
 import ds.project.toy.global.common.exception.CustomException;
 import ds.project.toy.global.common.exception.ResponseCode;
 import ds.project.toy.global.common.vo.AuthToken;
@@ -18,7 +21,9 @@ class AuthServiceTest extends IntegrationTestSupport {
     @Test
     public void reissuedToken() {
         //given
-        AuthToken authToken = createToken(1);
+        UserInfo userInfo = userInfoRepository.save(
+            createUserInfo("nickname", "email", UserInfoRole.ROLE_USER, UserInfoState.ACTIVE));
+        AuthToken authToken = createToken(userInfo.getUserId());
         ReissuedTokenServiceDto dto = ReissuedTokenServiceDto.of(authToken.getAccessToken(),
             authToken.getRefreshToken());
         given(redisUtil.hasKey(any(), any())).willReturn(true);
@@ -27,8 +32,8 @@ class AuthServiceTest extends IntegrationTestSupport {
         //then
         assertThat(response).isNotNull();
         assertThat(
-            jwtTokenProvider.getUserIdFromRefreshToken(authToken.getAccessToken())).isEqualTo(
-            jwtTokenProvider.getUserIdFromRefreshToken(response.getAccessToken()));
+            jwtTokenProvider.getUserIdFromToken(authToken.getAccessToken())).isEqualTo(
+            jwtTokenProvider.getAuthentication(response.getAccessToken()).getName());
     }
 
     @DisplayName(value = "redis에 토큰이 안되어 있다면 토큰 재생성 시 예외가 발생한다.")
@@ -50,5 +55,10 @@ class AuthServiceTest extends IntegrationTestSupport {
 
     private AuthToken createToken(long id) {
         return jwtTokenProvider.createTokenAndStore(String.valueOf(id));
+    }
+
+    private UserInfo createUserInfo(String nickname, String email,
+        UserInfoRole role, UserInfoState state) {
+        return UserInfo.of(nickname, email, role, state);
     }
 }

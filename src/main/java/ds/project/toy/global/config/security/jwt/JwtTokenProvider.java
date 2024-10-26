@@ -2,27 +2,25 @@ package ds.project.toy.global.config.security.jwt;
 
 import static io.jsonwebtoken.Jwts.builder;
 
-import ds.project.toy.global.common.exception.CustomException;
-import ds.project.toy.global.common.exception.ResponseCode;
 import ds.project.toy.global.common.vo.AuthToken;
 import ds.project.toy.global.common.vo.RedisPrefix;
 import ds.project.toy.global.util.RedisUtil;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SecurityException;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import javax.crypto.SecretKey;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
 
@@ -38,16 +36,19 @@ public class JwtTokenProvider {
     private final long refreshTokenValidityInDay;
     private final RedisUtil redisUtil;
     private final JwtParser jwtParser;
+    private final UserDetailsService userDetailsService;
 
     public JwtTokenProvider(
         @Value("${security.access-token-minute}") long accessTokenMinute,
         @Value("${security.refresh-token-day}") long refreshTokenDay,
-        @Value("${security.key}") String secret, RedisUtil redisUtil) {
+        @Value("${security.key}") String secret, RedisUtil redisUtil,
+        UserDetailsService userDetailsService) {
         this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
         this.accessTokenValidityInMinute = accessTokenMinute;
         this.refreshTokenValidityInDay = refreshTokenDay;
         this.redisUtil = redisUtil;
         this.jwtParser = Jwts.parser().verifyWith(secretKey).build();
+        this.userDetailsService = userDetailsService;
     }
 
     public AuthToken createTokenAndStore(String id) {
@@ -59,6 +60,13 @@ public class JwtTokenProvider {
             authTokens.getAccessToken(),
             Duration.ofDays(refreshTokenValidityInDay));
         return authTokens;
+    }
+
+    public Authentication getAuthentication(String token) {
+        String usernameFromToken = getUserIdFromToken(token);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(usernameFromToken);
+        return new UsernamePasswordAuthenticationToken(
+            userDetails, null, userDetails.getAuthorities());
     }
 
     private String createAccessToken(String username) {
@@ -83,19 +91,11 @@ public class JwtTokenProvider {
     }
 
     private Claims verifyToken(String token) {
-        try {
-            Jws<Claims> claimsJws = jwtParser.parseSignedClaims(token);
-            return claimsJws.getPayload();
-        } catch (ExpiredJwtException e) {
-            throw new CustomException(ResponseCode.EXPIRED_TOKEN);
-        } catch (UnsupportedJwtException e) {
-            throw new CustomException(ResponseCode.UNSUPPORTED_TOKEN);
-        } catch (MalformedJwtException | SecurityException | IllegalArgumentException e) {
-            throw new CustomException(ResponseCode.INVALID_TOKEN);
-        }
+        Jws<Claims> claimsJws = jwtParser.parseSignedClaims(token);
+        return claimsJws.getPayload();
     }
 
-    public String getUserIdFromRefreshToken(String refreshToken) {
+    public String getUserIdFromToken(String refreshToken) {
         Claims claims = verifyToken(refreshToken);
         return claims.getSubject();
     }
