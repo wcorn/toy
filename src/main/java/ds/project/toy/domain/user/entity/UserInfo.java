@@ -18,6 +18,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.web.multipart.MultipartFile;
 
 @Entity(name = "user_info")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -97,5 +98,9 @@ public class UserInfo {
 
     public void changeNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public void updateProfileImage(String profileImage) {
+        this.profileImage = profileImage;
     }
 }
