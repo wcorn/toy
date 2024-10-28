@@ -89,7 +89,7 @@ class UserServiceTest extends IntegrationTestSupport {
 
     private UserInfo createUserInfo(String nickname, String email,
         UserInfoRole role, UserInfoState state) {
-        return UserInfo.of(nickname, email, role, state);
+        return UserInfo.of(nickname, email,"image.jpg", role, state);
     }
 
     private SocialLogin createSocialLogin(SocialProvider provider, String id, UserInfo userInfo) {

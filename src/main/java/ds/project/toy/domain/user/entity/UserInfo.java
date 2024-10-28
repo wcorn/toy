@@ -33,6 +33,8 @@ public class UserInfo {
     private String nickname;
     @Column(name = "email")
     private String email;
+    @Column(name = "profile_image")
+    private String profileImage;
     @Column(name = "role")
     @Enumerated(STRING)
     private UserInfoRole role;
@@ -48,11 +50,12 @@ public class UserInfo {
 
     @Builder
     private UserInfo(String nickname, String email, UserInfoRole role, UserInfoState state,
-        LocalDateTime createdAt, LocalDateTime updatedAt) {
+        String profileImage, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.nickname = nickname;
         this.email = email;
         this.role = role;
         this.state = state;
+        this.profileImage = profileImage;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -63,6 +66,7 @@ public class UserInfo {
         this.email = userInfo.getEmail();
         this.role = userInfo.getRole();
         this.state = userInfo.getState();
+        this.profileImage = userInfo.getProfileImage();
         this.createdAt = userInfo.getCreatedAt();
         this.updatedAt = userInfo.getUpdatedAt();
     }
@@ -79,10 +83,11 @@ public class UserInfo {
     }
 
     public static UserInfo of(String nickname, String email,
-        UserInfoRole role, UserInfoState state) {
+        String profileImage, UserInfoRole role, UserInfoState state) {
         return UserInfo.builder()
             .email(email)
             .nickname(nickname)
+            .profileImage(profileImage)
             .createdAt(LocalDateTime.now())
             .updatedAt(LocalDateTime.now())
             .role(role)
