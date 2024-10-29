@@ -1,12 +1,13 @@
 create table user_info
 (
-  user_id    bigint primary key auto_increment not null,
-  nickname   varchar(12)                       not null,
-  email      text,
-  role       varchar(20)                       not null,
-  state      varchar(20)                       not null,
-  created_at TIMESTAMP                         not null,
-  updated_at TIMESTAMP                         not null
+  user_id       bigint primary key auto_increment not null,
+  nickname      varchar(12)                       not null,
+  email         text                              not null,
+  profile_image text,
+  role          varchar(20)                       not null,
+  state         varchar(20)                       not null,
+  created_at    TIMESTAMP                         not null,
+  updated_at    TIMESTAMP                         not null
 );
 
 create table admin_login

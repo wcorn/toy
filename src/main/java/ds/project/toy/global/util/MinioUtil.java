@@ -22,16 +22,25 @@ public class MinioUtil {
 
     @Value("${minio.bucket.name}")
     private String bucketName;
-
+    @Value("${minio.url}")
+    private String url;
     private final MinioClient minioClient;
 
     /**
      * 파일을 Minio에 업로드합니다.
      */
-    public void uploadFile(MultipartFile multipartFile) {
+    public String uploadFile(MultipartFile multipartFile) {
         String fileName = generateFileName(multipartFile);
         PutObjectArgs putObjectArgs = createPutObjectArgs(multipartFile, fileName);
         execute(() -> minioClient.putObject(putObjectArgs));
+        return createImageUrl(fileName);
+    }
+
+    /**
+     * 이미지 URL을 생성합니다.
+     */
+    private String createImageUrl(String fileName) {
+        return url + "/" + bucketName + "/" + fileName;
     }
 
     /**
@@ -50,7 +59,7 @@ public class MinioUtil {
      */
     private String generateFileName(MultipartFile multipartFile) {
         String extension = StringUtils.getFilenameExtension(multipartFile.getOriginalFilename());
-        return UUID.randomUUID() + (extension != null ? "." + extension : "");
+        return UUID.randomUUID() + "." + extension;
     }
 
     /**

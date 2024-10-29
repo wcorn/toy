@@ -7,6 +7,7 @@ import ds.project.toy.api.controller.user.UserController;
 import ds.project.toy.api.service.auth.AuthService;
 import ds.project.toy.api.service.user.UserService;
 import ds.project.toy.global.config.security.jwt.JwtTokenProvider;
+import ds.project.toy.global.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -31,4 +32,6 @@ public abstract class ControllerTestSupport {
     protected UserService userService;
     @MockBean
     protected JwtTokenProvider jwtTokenProvider;
+    @MockBean
+    protected FileUtil fileUtil;
 }

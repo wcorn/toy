@@ -56,6 +56,6 @@ class UserInfoRepositoryTest extends IntegrationTestSupport {
 
     private UserInfo createUserInfo(String nickname, String email,
         UserInfoRole role, UserInfoState state) {
-        return UserInfo.of(nickname, email, role, state);
+        return UserInfo.of(nickname, email, "image.jpg", role, state);
     }
 }

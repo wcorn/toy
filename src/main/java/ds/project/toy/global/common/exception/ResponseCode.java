@@ -19,10 +19,13 @@ public enum ResponseCode {
     NOTFOUND_USER("USER-ERR-001", "유저를 찾을 수 없습니다."),
     NICKNAME_ALREADY_IN_USE("USER-ERR-002", "유저가 현재 사용 중인 닉네임입니다."),
     DUPLICATE_NICKNAME("USER-ERR-003", "이미 존재하는 닉네임입니다."),
+
     //GLOBAL
     BAD_REQUEST("GLB-ERR-001", "잘못된 요청입니다."),
     METHOD_NOT_ALLOWED("GLB-ERR-002", "허용되지 않은 메서드입니다."),
-    INTERNAL_SERVER_ERROR("GLB-ERR-003", "내부 서버 오류입니다.");
+    INTERNAL_SERVER_ERROR("GLB-ERR-003", "내부 서버 오류입니다."),
+    NOT_IMAGE("GLB-ERR-004","이미지 파일이 아닙니다.")
+    ;
     private final String code;
     private final String message;
 
