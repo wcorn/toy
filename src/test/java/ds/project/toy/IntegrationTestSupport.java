@@ -24,7 +24,7 @@ public abstract class IntegrationTestSupport {
     protected RedisUtil redisUtil;
     @MockBean
     protected MinioUtil minioUtil;
-    @MockBean
+    @Autowired
     protected FileUtil fileUtil;
 
     @Autowired

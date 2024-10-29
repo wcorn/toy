@@ -18,7 +18,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.web.multipart.MultipartFile;
 
 @Entity(name = "user_info")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -89,6 +88,18 @@ public class UserInfo {
             .email(email)
             .nickname(nickname)
             .profileImage(profileImage)
+            .createdAt(LocalDateTime.now())
+            .updatedAt(LocalDateTime.now())
+            .role(role)
+            .state(state)
+            .build();
+    }
+
+    public static UserInfo of(String nickname, String email,
+        UserInfoRole role, UserInfoState state) {
+        return UserInfo.builder()
+            .email(email)
+            .nickname(nickname)
             .createdAt(LocalDateTime.now())
             .updatedAt(LocalDateTime.now())
             .role(role)

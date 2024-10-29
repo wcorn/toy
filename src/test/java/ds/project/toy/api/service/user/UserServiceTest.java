@@ -2,10 +2,16 @@ package ds.project.toy.api.service.user;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import ds.project.toy.IntegrationTestSupport;
 import ds.project.toy.api.controller.user.dto.response.ChangeNicknameResponse;
+import ds.project.toy.api.controller.user.dto.response.ChangeProfileImageResponse;
 import ds.project.toy.api.service.user.dto.ChangeNicknameServiceDto;
+import ds.project.toy.api.service.user.dto.ChangeProfileImageDto;
 import ds.project.toy.domain.user.entity.SocialLogin;
 import ds.project.toy.domain.user.entity.SocialProvider;
 import ds.project.toy.domain.user.entity.UserInfo;
@@ -17,6 +23,8 @@ import ds.project.toy.global.common.exception.ResponseCode;
 import ds.project.toy.global.common.vo.OAuth2Provider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 
 class UserServiceTest extends IntegrationTestSupport {
 
@@ -87,9 +95,57 @@ class UserServiceTest extends IntegrationTestSupport {
             .isEqualTo(ResponseCode.DUPLICATE_NICKNAME);
     }
 
+    @DisplayName(value = "변경할 이미지를 받아 프로필 이미지를 수정한다.")
+    @Test
+    public void changeProfileImage() {
+        //given
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("image", "test.jpeg",
+            MediaType.IMAGE_JPEG_VALUE, "test".getBytes());
+        UserInfo userInfo = userInfoRepository.save(createUserInfo("nickname", "email",
+            UserInfoRole.ROLE_USER, UserInfoState.ACTIVE));
+        ChangeProfileImageDto dto = ChangeProfileImageDto.of(
+            userInfo.getUserId(), mockMultipartFile);
+        String imageUrl = "image.url";
+        given(minioUtil.uploadFile(any())).willReturn(imageUrl);
+
+        //when
+        ChangeProfileImageResponse response = userService.changeProfileImage(dto);
+
+        //then
+        assertThat(response).isNotNull();
+        assertThat(response.getProfileImage()).isEqualTo(imageUrl);
+    }
+
+    @DisplayName(value = "프로필 이미지를 수정할 때 기존이미지가 있으면 기존이미지를 삭제한다.")
+    @Test
+    public void changeProfileImageWithExistsProfileImage() {
+        //given
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("image", "test.jpeg",
+            MediaType.IMAGE_JPEG_VALUE, "test".getBytes());
+        UserInfo userInfo = userInfoRepository.save(createUserInfo("nickname", "email", "image.jpg",
+            UserInfoRole.ROLE_USER, UserInfoState.ACTIVE));
+        ChangeProfileImageDto dto = ChangeProfileImageDto.of(
+            userInfo.getUserId(), mockMultipartFile);
+        String imageUrl = "changeImage.jpg";
+        given(minioUtil.uploadFile(any())).willReturn(imageUrl);
+
+        //when
+        ChangeProfileImageResponse response = userService.changeProfileImage(dto);
+
+        //then
+        assertThat(response).isNotNull();
+        assertThat(response.getProfileImage()).isEqualTo(imageUrl);
+        verify(minioUtil, times(1)).deleteFile(any());
+    }
+
     private UserInfo createUserInfo(String nickname, String email,
         UserInfoRole role, UserInfoState state) {
-        return UserInfo.of(nickname, email,"image.jpg", role, state);
+        return UserInfo.of(nickname, email, role, state);
+    }
+
+    private UserInfo createUserInfo(String nickname, String email, String image,
+        UserInfoRole role, UserInfoState state) {
+        return UserInfo.of(nickname, email, image, role, state);
     }
 
     private SocialLogin createSocialLogin(SocialProvider provider, String id, UserInfo userInfo) {
