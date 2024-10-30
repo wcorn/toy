@@ -10,8 +10,10 @@ import static org.mockito.Mockito.verify;
 import ds.project.toy.IntegrationTestSupport;
 import ds.project.toy.api.controller.user.dto.response.ChangeNicknameResponse;
 import ds.project.toy.api.controller.user.dto.response.ChangeProfileImageResponse;
+import ds.project.toy.api.controller.user.dto.response.GetUserProfileResponse;
 import ds.project.toy.api.service.user.dto.ChangeNicknameServiceDto;
 import ds.project.toy.api.service.user.dto.ChangeProfileImageDto;
+import ds.project.toy.api.service.user.dto.GetUserProfileDto;
 import ds.project.toy.domain.user.entity.SocialLogin;
 import ds.project.toy.domain.user.entity.SocialProvider;
 import ds.project.toy.domain.user.entity.UserInfo;
@@ -136,6 +138,26 @@ class UserServiceTest extends IntegrationTestSupport {
         assertThat(response).isNotNull();
         assertThat(response.getProfileImage()).isEqualTo(imageUrl);
         verify(minioUtil, times(1)).deleteFile(any());
+    }
+
+    @DisplayName(value = "유저 id로 유저 정보를 조회한다.")
+    @Test
+    public void getUserProfile() {
+        //given
+        String nickname = "nickname";
+        String email = "email@email.com";
+        String profile_image = "profile_image.jpg";
+        UserInfo userInfo = userInfoRepository.save(createUserInfo(nickname, email, profile_image,
+            UserInfoRole.ROLE_USER, UserInfoState.ACTIVE));
+        GetUserProfileDto dto = GetUserProfileDto.of(userInfo.getUserId());
+
+        //when
+        GetUserProfileResponse response = userService.getUserProfile(dto);
+
+        //then
+        assertThat(response)
+            .extracting("nickname", "email", "profile_image")
+            .containsExactly(nickname, email, profile_image);
     }
 
     private UserInfo createUserInfo(String nickname, String email,

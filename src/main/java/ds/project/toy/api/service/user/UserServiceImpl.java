@@ -2,8 +2,10 @@ package ds.project.toy.api.service.user;
 
 import ds.project.toy.api.controller.user.dto.response.ChangeNicknameResponse;
 import ds.project.toy.api.controller.user.dto.response.ChangeProfileImageResponse;
+import ds.project.toy.api.controller.user.dto.response.GetUserProfileResponse;
 import ds.project.toy.api.service.user.dto.ChangeNicknameServiceDto;
 import ds.project.toy.api.service.user.dto.ChangeProfileImageDto;
+import ds.project.toy.api.service.user.dto.GetUserProfileDto;
 import ds.project.toy.domain.user.entity.UserInfo;
 import ds.project.toy.domain.user.repository.UserInfoRepository;
 import ds.project.toy.domain.user.vo.UserInfoState;
@@ -48,6 +50,12 @@ public class UserServiceImpl implements UserService {
         }
         userInfo.updateProfileImage(minioUtil.uploadFile(of.getImage()));
         return ChangeProfileImageResponse.of(userInfo.getProfileImage());
+    }
+
+    @Override
+    public GetUserProfileResponse getUserProfile(GetUserProfileDto serviceDto) {
+        UserInfo userInfo = findUserBy(serviceDto.getUserId());
+        return GetUserProfileResponse.of(userInfo);
     }
 
     private boolean existNickname(String nickname) {
