@@ -3,12 +3,15 @@ package ds.project.toy.api.controller.user;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ds.project.toy.ControllerTestSupport;
 import ds.project.toy.api.controller.user.dto.request.ChangeNicknameRequest;
+import ds.project.toy.api.controller.user.dto.response.GetUserProfileResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
@@ -49,6 +52,31 @@ class UserControllerTest extends ControllerTestSupport {
                     .with(csrf())
             )
             .andExpect(status().isOk());
+        //then
+
+    }
+
+    @DisplayName(value = "프로필을 조회한다.")
+    @Test
+    @WithMockUser(roles = "USER", username = "1")
+    public void getUserProfile() throws Exception {
+        //given
+        String nickname = "nickname";
+        String profileImage = "test.jpg";
+        String email = "email@email.com";
+        GetUserProfileResponse response = GetUserProfileResponse.of(nickname, email, profileImage);
+        given(userService.getUserProfile(any())).willReturn(response);
+        //when
+        mockMvc.perform(
+                get("/user/profile")
+                    .with(csrf())
+            )
+            .andExpect(status().isOk())
+            .andExpectAll(
+                jsonPath("$.nickname").value(nickname),
+                jsonPath("$.email").value(email),
+                jsonPath("$.profile_image").value(profileImage)
+            );
         //then
 
     }
