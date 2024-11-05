@@ -111,7 +111,6 @@ jacocoTestReport {
         files(classDirectories.files.collect {
           fileTree(dir: it, exclude: [
               '**/ds/project/toy/ToyApplication.class',
-              '**/test/**',
           ])
         })
     )
