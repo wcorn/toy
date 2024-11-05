@@ -1,6 +1,7 @@
 package ds.project.toy;
 
 
+import ds.project.toy.api.service.admin.AdminService;
 import ds.project.toy.api.service.auth.AuthService;
 import ds.project.toy.api.service.user.UserService;
 import ds.project.toy.domain.user.repository.AdminLoginRepository;
@@ -36,6 +37,8 @@ public abstract class IntegrationTestSupport {
     protected AuthService authService;
     @Autowired
     protected UserService userService;
+    @Autowired
+    protected AdminService adminService;
 
     @Autowired
     protected AdminLoginRepository adminLoginRepository;

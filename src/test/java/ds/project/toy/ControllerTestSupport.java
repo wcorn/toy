@@ -2,8 +2,10 @@ package ds.project.toy;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import ds.project.toy.api.controller.admin.AdminController;
 import ds.project.toy.api.controller.auth.AuthController;
 import ds.project.toy.api.controller.user.UserController;
+import ds.project.toy.api.service.admin.AdminService;
 import ds.project.toy.api.service.auth.AuthService;
 import ds.project.toy.api.service.user.UserService;
 import ds.project.toy.global.config.security.jwt.JwtTokenProvider;
@@ -17,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @WebMvcTest(controllers = {
     AuthController.class,
     UserController.class,
+    AdminController.class,
 })
 @WithMockUser
 public abstract class ControllerTestSupport {
@@ -30,6 +33,8 @@ public abstract class ControllerTestSupport {
     protected AuthService authService;
     @MockBean
     protected UserService userService;
+    @MockBean
+    protected AdminService adminService;
     @MockBean
     protected JwtTokenProvider jwtTokenProvider;
     @MockBean
