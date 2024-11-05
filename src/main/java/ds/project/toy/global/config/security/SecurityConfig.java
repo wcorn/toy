@@ -67,8 +67,9 @@ public class SecurityConfig {
                 .requestMatchers("/actuator/**", "/swagger-ui/**",
                     "/swagger-resources/**", "/api-docs/**").permitAll()
                 .requestMatchers("/login/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/auth/token/reissue").permitAll()
+                .requestMatchers(HttpMethod.POST, "/auth/token/reissue","/admin/login").permitAll()
                 .requestMatchers("/member/**").hasRole(UserInfoRole.ROLE_USER.getName())
+                .requestMatchers("/**").hasRole(UserInfoRole.ROLE_ADMIN.getName())
                 .anyRequest().authenticated()
             )
             .addFilterAfter(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)

@@ -20,6 +20,10 @@ public enum ResponseCode {
     NICKNAME_ALREADY_IN_USE("USER-ERR-002", "유저가 현재 사용 중인 닉네임입니다."),
     DUPLICATE_NICKNAME("USER-ERR-003", "이미 존재하는 닉네임입니다."),
 
+    //ADMIN
+    NOTFOUND_ADMIN("ADMIN-ERR-001", "존재하지 않은 관리자입니다."),
+    FAILED_ADMIN_LOGIN("ADMIN-ERR-002","아이디 또는 비밀번호가 잘못 되었습니다."),
+
     //GLOBAL
     BAD_REQUEST("GLB-ERR-001", "잘못된 요청입니다."),
     METHOD_NOT_ALLOWED("GLB-ERR-002", "허용되지 않은 메서드입니다."),
