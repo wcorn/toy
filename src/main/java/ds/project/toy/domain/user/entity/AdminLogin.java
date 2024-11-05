@@ -38,4 +38,14 @@ public class AdminLogin {
         this.password = password;
         this.salt = salt;
     }
+
+    public static AdminLogin of(UserInfo userInfo, String id, String password, String salt) {
+        return AdminLogin.builder()
+            .userInfo(userInfo)
+            .id(id)
+            .password(password)
+            .salt(salt)
+            .build();
+    }
+
 }
