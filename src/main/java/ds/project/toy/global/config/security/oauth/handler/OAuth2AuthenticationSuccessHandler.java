@@ -34,8 +34,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     private Long extractUserId(Authentication authentication) {
         Object principal = authentication.getPrincipal();
-        if (principal instanceof OAuth2UserImpl) {
-            return ((OAuth2UserImpl) principal).getUserId();
+        if (principal instanceof OAuth2UserImpl oAuth2User) {
+            return oAuth2User.getUserId();
         }
         return null;
     }
