@@ -111,6 +111,12 @@ jacocoTestReport {
         files(classDirectories.files.collect {
           fileTree(dir: it, exclude: [
               '**/ds/project/toy/ToyApplication.class',
+              '**/ds/project/toy/global/common/exception/**',
+              '**/dto/**',
+              '**/config/*.class',
+              '**/ds/project/toy/global/common/api/**',
+              '**/ds/project/toy/global/util/MinioUtil.class',
+              '**/ds/project/toy/global/util/RedisUtil.class',
           ])
         })
     )
