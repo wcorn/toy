@@ -48,7 +48,7 @@ class UserControllerTest extends ControllerTestSupport {
         given(fileUtil.isImageFile(any())).willReturn(true);
         //when
         mockMvc.perform(
-                multipart(HttpMethod.PATCH, "/user/profile_image")
+                multipart(HttpMethod.PATCH, "/user/profile-image")
                     .file(image)
                     .with(csrf())
             )
@@ -67,7 +67,7 @@ class UserControllerTest extends ControllerTestSupport {
         given(fileUtil.isImageFile(any())).willReturn(false);
         //when
         mockMvc.perform(
-                multipart(HttpMethod.PATCH, "/user/profile_image")
+                multipart(HttpMethod.PATCH, "/user/profile-image")
                     .file(image)
                     .with(csrf())
             )
