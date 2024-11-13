@@ -11,7 +11,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import ds.project.toy.ControllerTestSupport;
 import ds.project.toy.api.controller.user.dto.request.ChangeNicknameRequest;
+import ds.project.toy.api.controller.user.dto.response.ChangeProfileImageResponse;
 import ds.project.toy.api.controller.user.dto.response.GetUserProfileResponse;
+import ds.project.toy.global.common.exception.ResponseCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
@@ -52,6 +54,29 @@ class UserControllerTest extends ControllerTestSupport {
                     .with(csrf())
             )
             .andExpect(status().isOk());
+        //then
+
+    }
+
+    @DisplayName(value = "프로필 이미지를 변경할때 유효한 이미지가 아닌 경우 예외가 발생한다.")
+    @Test
+    @WithMockUser(roles = "USER", username = "1")
+    void changeProfileImageWithInvalidImage() throws Exception {
+        //given
+        MockMultipartFile image = new MockMultipartFile("image", "test.jpeg",
+            null, "test".getBytes());
+        given(fileUtil.isImageFile(any())).willReturn(false);
+        //when
+        mockMvc.perform(
+                multipart(HttpMethod.PATCH, "/user/profile_image")
+                    .file(image)
+                    .with(csrf())
+            )
+            .andExpect(status().isBadRequest())
+            .andExpectAll(
+                jsonPath("$.code").value(ResponseCode.NOT_IMAGE.getCode()),
+                jsonPath("$.message").value(ResponseCode.NOT_IMAGE.getMessage())
+            );
         //then
 
     }
