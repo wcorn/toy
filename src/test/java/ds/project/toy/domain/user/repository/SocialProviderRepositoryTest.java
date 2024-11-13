@@ -23,7 +23,7 @@ class SocialProviderRepositoryTest extends IntegrationTestSupport {
         Optional<SocialProvider> socialProvider = socialProviderRepository.findByProviderAndState(
             provider, state);
         //then
-        assertThat(socialProvider.isPresent()).isTrue();
+        assertThat(socialProvider).isPresent();
         assertThat(socialProvider.get().getProvider()).isEqualTo(provider);
     }
 

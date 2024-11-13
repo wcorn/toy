@@ -31,7 +31,7 @@ class SocialLoginRepositoryTest extends IntegrationTestSupport {
         Optional<SocialLogin> socialLogin = socialLoginRepository.findByProviderProviderAndSocialId(
             provider, socialId);
         //then
-        assertThat(socialLogin.isPresent()).isTrue();
+        assertThat(socialLogin).isPresent();
         assertThat(socialLogin.get().getProvider().getProvider()).isEqualTo(provider);
         assertThat(socialLogin.get().getSocialId()).isEqualTo(socialId);
     }
