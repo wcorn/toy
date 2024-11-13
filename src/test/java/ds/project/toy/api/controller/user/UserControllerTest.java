@@ -11,7 +11,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import ds.project.toy.ControllerTestSupport;
 import ds.project.toy.api.controller.user.dto.request.ChangeNicknameRequest;
-import ds.project.toy.api.controller.user.dto.response.ChangeProfileImageResponse;
 import ds.project.toy.api.controller.user.dto.response.GetUserProfileResponse;
 import ds.project.toy.global.common.exception.ResponseCode;
 import org.junit.jupiter.api.DisplayName;
@@ -26,7 +25,7 @@ class UserControllerTest extends ControllerTestSupport {
     @DisplayName(value = "닉네임을 변경한다.")
     @Test
     @WithMockUser(roles = "USER", username = "1")
-    public void changeNickname() throws Exception {
+    void changeNickname() throws Exception {
         //given
         String nickname = "nickname";
         ChangeNicknameRequest request = ChangeNicknameRequest.of(nickname);
@@ -42,7 +41,7 @@ class UserControllerTest extends ControllerTestSupport {
     @DisplayName(value = "프로필 이미지를 변경한다.")
     @Test
     @WithMockUser(roles = "USER", username = "1")
-    public void changeProfileImage() throws Exception {
+    void changeProfileImage() throws Exception {
         //given
         MockMultipartFile image = new MockMultipartFile("image", "test.jpeg",
             MediaType.IMAGE_JPEG_VALUE, "test".getBytes());
@@ -84,7 +83,7 @@ class UserControllerTest extends ControllerTestSupport {
     @DisplayName(value = "프로필을 조회한다.")
     @Test
     @WithMockUser(roles = "USER", username = "1")
-    public void getUserProfile() throws Exception {
+    void getUserProfile() throws Exception {
         //given
         String nickname = "nickname";
         String profileImage = "test.jpg";

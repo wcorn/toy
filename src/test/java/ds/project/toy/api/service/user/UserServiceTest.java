@@ -32,7 +32,7 @@ class UserServiceTest extends IntegrationTestSupport {
 
     @DisplayName(value = "변경할 닉네임을 받아 기존 닉네임을 변경한다.")
     @Test
-    public void changeNickname() {
+    void changeNickname() {
         //given
         String prevNickname = "prev";
         String nextNickname = "nickname";
@@ -54,7 +54,7 @@ class UserServiceTest extends IntegrationTestSupport {
 
     @DisplayName(value = "닉네임을 변경할 때 기존닉네임일 경우 예외가 발생한다.")
     @Test
-    public void changeNicknameWithNicknameAlreadyInUse() {
+    void changeNicknameWithNicknameAlreadyInUse() {
         //given
         String nickname = "nickname";
         SocialProvider socialProvider = socialProviderRepository.save(
@@ -74,7 +74,7 @@ class UserServiceTest extends IntegrationTestSupport {
 
     @DisplayName(value = "닉네임을 변경할 때 중복된 닉네임일 경우 예외가 발생한다.")
     @Test
-    public void changeNicknameWithDuplicateNickname() {
+    void changeNicknameWithDuplicateNickname() {
         //given
         String prevNickname = "prev";
         String duplicateNickname = "nickname";
@@ -99,7 +99,7 @@ class UserServiceTest extends IntegrationTestSupport {
 
     @DisplayName(value = "변경할 이미지를 받아 프로필 이미지를 수정한다.")
     @Test
-    public void changeProfileImage() {
+    void changeProfileImage() {
         //given
         MockMultipartFile mockMultipartFile = new MockMultipartFile("image", "test.jpeg",
             MediaType.IMAGE_JPEG_VALUE, "test".getBytes());
@@ -120,7 +120,7 @@ class UserServiceTest extends IntegrationTestSupport {
 
     @DisplayName(value = "프로필 이미지를 수정할 때 기존이미지가 있으면 기존이미지를 삭제한다.")
     @Test
-    public void changeProfileImageWithExistsProfileImage() {
+    void changeProfileImageWithExistsProfileImage() {
         //given
         MockMultipartFile mockMultipartFile = new MockMultipartFile("image", "test.jpeg",
             MediaType.IMAGE_JPEG_VALUE, "test".getBytes());
@@ -142,7 +142,7 @@ class UserServiceTest extends IntegrationTestSupport {
 
     @DisplayName(value = "유저 id로 유저 정보를 조회한다.")
     @Test
-    public void getUserProfile() {
+    void getUserProfile() {
         //given
         String nickname = "nickname";
         String email = "email@email.com";

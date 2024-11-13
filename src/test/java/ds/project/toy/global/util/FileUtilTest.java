@@ -12,7 +12,7 @@ class FileUtilTest extends IntegrationTestSupport {
 
     @DisplayName(value = "이미지 파일의 속성이 jpg인지 판별한다.")
     @Test
-    public void isImageFileWithJPG() {
+    void isImageFileWithJPG() {
         //given
         MockMultipartFile mockMultipartFile = new MockMultipartFile("image", "test.jpg",
             MediaType.IMAGE_JPEG_VALUE, "hello.jpg".getBytes());
@@ -24,7 +24,7 @@ class FileUtilTest extends IntegrationTestSupport {
 
     @DisplayName(value = "이미지 파일의 속성이 png인지 판별한다.")
     @Test
-    public void isImageFileWithPNG() throws Exception {
+    void isImageFileWithPNG() {
         //given
         MockMultipartFile mockMultipartFile = new MockMultipartFile("image", "test.png",
             MediaType.IMAGE_PNG_VALUE, "hello.jpg".getBytes());

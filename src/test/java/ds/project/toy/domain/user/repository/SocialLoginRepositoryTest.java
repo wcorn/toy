@@ -18,7 +18,7 @@ class SocialLoginRepositoryTest extends IntegrationTestSupport {
 
     @DisplayName(value = "소셜 로그인 제공자와 소셜 로그인 id에 따른 소셜 로그인엔티티를 조회한다.")
     @Test
-    public void findByProviderProviderAndSocialId() {
+    void findByProviderProviderAndSocialId() {
         //given
         OAuth2Provider provider = OAuth2Provider.KAKAO;
         String socialId = "SocialId";

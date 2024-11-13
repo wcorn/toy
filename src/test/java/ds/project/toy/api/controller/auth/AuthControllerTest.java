@@ -18,7 +18,7 @@ class AuthControllerTest extends ControllerTestSupport {
 
     @DisplayName(value = "토큰을 재발급한다.")
     @Test
-    public void reissuedToken() throws Exception {
+    void reissuedToken() throws Exception {
         //given
         ReissuedTokenRequest request = ReissuedTokenRequest.of("accessToken", "refreshToken");
         AuthToken authToken = AuthToken.of("accessToken2", "refreshToken2");

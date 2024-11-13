@@ -14,7 +14,7 @@ class SocialProviderRepositoryTest extends IntegrationTestSupport {
 
     @DisplayName(value = "소셜로그인 제공자에 따른 활성화된 소셜 로그인 제공자엔티티를 조회한다.")
     @Test
-    public void findByProviderAndState() {
+    void findByProviderAndState() {
         //given
         OAuth2Provider provider = OAuth2Provider.KAKAO;
         SocialProviderState state = SocialProviderState.ACTIVE;

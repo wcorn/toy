@@ -19,7 +19,7 @@ class AuthServiceTest extends IntegrationTestSupport {
 
     @DisplayName(value = "토큰을 받아 기존 토큰을 삭제한 후 재생성한다.")
     @Test
-    public void reissuedToken() {
+    void reissuedToken() {
         //given
         UserInfo userInfo = userInfoRepository.save(
             createUserInfo("nickname", "email", UserInfoRole.ROLE_USER, UserInfoState.ACTIVE));
@@ -38,7 +38,7 @@ class AuthServiceTest extends IntegrationTestSupport {
 
     @DisplayName(value = "redis에 토큰이 안되어 있다면 토큰 재생성 시 예외가 발생한다.")
     @Test
-    public void reissuedTokenWithRedisNotStoredToken() {
+    void reissuedTokenWithRedisNotStoredToken() {
         //given
         AuthToken authToken = createToken(1);
         ReissuedTokenServiceDto dto = ReissuedTokenServiceDto.of(authToken.getAccessToken(),
