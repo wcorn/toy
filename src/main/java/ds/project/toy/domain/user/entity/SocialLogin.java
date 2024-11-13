@@ -39,15 +39,6 @@ public class SocialLogin {
         this.provider = provider;
     }
 
-    public static SocialLogin create(UserInfo userInfo, SocialProvider socialProvider,
-        String socialId) {
-        return SocialLogin.builder()
-            .provider(socialProvider)
-            .userInfo(userInfo)
-            .socialId(socialId)
-            .build();
-    }
-
     public static SocialLogin of(SocialProvider provider, String id, UserInfo userInfo) {
         return SocialLogin.builder()
             .provider(provider)
