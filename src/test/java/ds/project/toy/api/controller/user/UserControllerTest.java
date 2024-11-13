@@ -99,7 +99,7 @@ class UserControllerTest extends ControllerTestSupport {
             .andExpectAll(
                 jsonPath("$.nickname").value(nickname),
                 jsonPath("$.email").value(email),
-                jsonPath("$.profile_image").value(profileImage)
+                jsonPath("$.profileImage").value(profileImage)
             );
         //then
 

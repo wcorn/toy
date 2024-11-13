@@ -40,7 +40,7 @@ public class UserController {
         return ResponseEntity.ok(userService.changeNickname(request.toServiceDto(memberId)));
     }
 
-    @PatchMapping(value = "/profile_image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "/profile-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ChangeProfileImageResponse> changeProfileImage(
         @RequestPart(value = "image") MultipartFile image) {
         if (!fileUtil.isImageFile(image)) {

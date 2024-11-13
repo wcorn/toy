@@ -146,8 +146,8 @@ class UserServiceTest extends IntegrationTestSupport {
         //given
         String nickname = "nickname";
         String email = "email@email.com";
-        String profile_image = "profile_image.jpg";
-        UserInfo userInfo = userInfoRepository.save(createUserInfo(nickname, email, profile_image,
+        String profileImage = "profileImage.jpg";
+        UserInfo userInfo = userInfoRepository.save(createUserInfo(nickname, email, profileImage,
             UserInfoRole.ROLE_USER, UserInfoState.ACTIVE));
         GetUserProfileDto dto = GetUserProfileDto.of(userInfo.getUserId());
 
@@ -156,8 +156,8 @@ class UserServiceTest extends IntegrationTestSupport {
 
         //then
         assertThat(response)
-            .extracting("nickname", "email", "profile_image")
-            .containsExactly(nickname, email, profile_image);
+            .extracting("nickname", "email", "profileImage")
+            .containsExactly(nickname, email, profileImage);
     }
 
     private UserInfo createUserInfo(String nickname, String email,
