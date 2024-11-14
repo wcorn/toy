@@ -117,6 +117,7 @@ jacocoTestReport {
               '**/ds/project/toy/global/common/api/**',
               '**/ds/project/toy/global/util/MinioUtil.class',
               '**/ds/project/toy/global/util/RedisUtil.class',
+              '**/ds/project/toy/global/config/security/**',
           ])
         })
     )
