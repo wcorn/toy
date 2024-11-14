@@ -54,8 +54,8 @@ public class OAuth2UserServiceImpl extends DefaultOAuth2UserService {
         UserInfo userInfo = UserInfo.creatUser(oAuth2UserInfo.getEmail(),
             oAuth2UserInfo.getNickname());
         SocialProvider socialProvider = findActiveSocialProvider(oAuth2UserInfo.getProvider());
-        SocialLogin newSocialLogin = SocialLogin.create(userInfo, socialProvider,
-            oAuth2UserInfo.getId());
+        SocialLogin newSocialLogin = SocialLogin.of(socialProvider, oAuth2UserInfo.getId(),
+            userInfo);
         return socialLoginRepository.save(newSocialLogin);
     }
 

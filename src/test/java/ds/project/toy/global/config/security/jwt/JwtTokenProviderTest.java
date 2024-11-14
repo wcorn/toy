@@ -39,7 +39,7 @@ class JwtTokenProviderTest extends IntegrationTestSupport {
 
     @DisplayName(value = "리프레시 토큰으로 유저아이디를 조회한다.")
     @Test
-    public void getUserIdFromRefreshToken() {
+    void getUserIdFromRefreshToken() {
         //given
         String userId = "id";
         AuthToken authToken = jwtTokenProvider.createTokenAndStore(userId);

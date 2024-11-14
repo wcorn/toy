@@ -40,4 +40,4 @@ jobs:
             -Dsonar.host.url=https://sonarcloud.io
             -Dsonar.java.binaries=build/classes
             -Dsonar.coverage.jacoco.xmlReportPaths=build/reports/jacoco/test/jacocoTestReport.xml
-            -Dsonar.coverage.exclusions=**/test/**
+            -Dsonar.coverage.exclusions=**/test/**,**/ds/project/toy/ToyApplication.class,**/ds/project/toy/global/common/exception/**,**/dto/**,**/config/*.class,**/ds/project/toy/global/common/api/**,**/ds/project/toy/global/util/MinioUtil.class,**/ds/project/toy/global/util/RedisUtil.class,**/ds/project/toy/global/config/security/**

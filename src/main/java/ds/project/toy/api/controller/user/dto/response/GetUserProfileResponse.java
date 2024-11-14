@@ -11,20 +11,20 @@ public class GetUserProfileResponse {
 
     private String nickname;
     private String email;
-    private String profile_image;
+    private String profileImage;
 
     @Builder
-    private GetUserProfileResponse(String nickname, String email, String profile_image) {
+    private GetUserProfileResponse(String nickname, String email, String profileImage) {
         this.nickname = nickname;
         this.email = email;
-        this.profile_image = profile_image;
+        this.profileImage = profileImage;
     }
 
-    public static GetUserProfileResponse of(String nickname, String email, String profile_image) {
+    public static GetUserProfileResponse of(String nickname, String email, String profileImage) {
         return GetUserProfileResponse.builder()
             .nickname(nickname)
             .email(email)
-            .profile_image(profile_image)
+            .profileImage(profileImage)
             .build();
     }
 
@@ -32,7 +32,7 @@ public class GetUserProfileResponse {
         return GetUserProfileResponse.builder()
             .nickname(userInfo.getNickname())
             .email(userInfo.getEmail())
-            .profile_image(userInfo.getProfileImage())
+            .profileImage(userInfo.getProfileImage())
             .build();
     }
 }

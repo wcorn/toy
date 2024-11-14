@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import ds.project.toy.ControllerTestSupport;
 import ds.project.toy.api.controller.user.dto.request.ChangeNicknameRequest;
 import ds.project.toy.api.controller.user.dto.response.GetUserProfileResponse;
+import ds.project.toy.global.common.exception.ResponseCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
@@ -24,7 +25,7 @@ class UserControllerTest extends ControllerTestSupport {
     @DisplayName(value = "닉네임을 변경한다.")
     @Test
     @WithMockUser(roles = "USER", username = "1")
-    public void changeNickname() throws Exception {
+    void changeNickname() throws Exception {
         //given
         String nickname = "nickname";
         ChangeNicknameRequest request = ChangeNicknameRequest.of(nickname);
@@ -40,14 +41,14 @@ class UserControllerTest extends ControllerTestSupport {
     @DisplayName(value = "프로필 이미지를 변경한다.")
     @Test
     @WithMockUser(roles = "USER", username = "1")
-    public void changeProfileImage() throws Exception {
+    void changeProfileImage() throws Exception {
         //given
         MockMultipartFile image = new MockMultipartFile("image", "test.jpeg",
             MediaType.IMAGE_JPEG_VALUE, "test".getBytes());
         given(fileUtil.isImageFile(any())).willReturn(true);
         //when
         mockMvc.perform(
-                multipart(HttpMethod.PATCH, "/user/profile_image")
+                multipart(HttpMethod.PATCH, "/user/profile-image")
                     .file(image)
                     .with(csrf())
             )
@@ -56,10 +57,33 @@ class UserControllerTest extends ControllerTestSupport {
 
     }
 
+    @DisplayName(value = "프로필 이미지를 변경할때 유효한 이미지가 아닌 경우 예외가 발생한다.")
+    @Test
+    @WithMockUser(roles = "USER", username = "1")
+    void changeProfileImageWithInvalidImage() throws Exception {
+        //given
+        MockMultipartFile image = new MockMultipartFile("image", "test.jpeg",
+            null, "test".getBytes());
+        given(fileUtil.isImageFile(any())).willReturn(false);
+        //when
+        mockMvc.perform(
+                multipart(HttpMethod.PATCH, "/user/profile-image")
+                    .file(image)
+                    .with(csrf())
+            )
+            .andExpect(status().isBadRequest())
+            .andExpectAll(
+                jsonPath("$.code").value(ResponseCode.NOT_IMAGE.getCode()),
+                jsonPath("$.message").value(ResponseCode.NOT_IMAGE.getMessage())
+            );
+        //then
+
+    }
+
     @DisplayName(value = "프로필을 조회한다.")
     @Test
     @WithMockUser(roles = "USER", username = "1")
-    public void getUserProfile() throws Exception {
+    void getUserProfile() throws Exception {
         //given
         String nickname = "nickname";
         String profileImage = "test.jpg";
@@ -75,7 +99,7 @@ class UserControllerTest extends ControllerTestSupport {
             .andExpectAll(
                 jsonPath("$.nickname").value(nickname),
                 jsonPath("$.email").value(email),
-                jsonPath("$.profile_image").value(profileImage)
+                jsonPath("$.profileImage").value(profileImage)
             );
         //then
 

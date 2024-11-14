@@ -15,7 +15,7 @@ class UserInfoRepositoryTest extends IntegrationTestSupport {
 
     @DisplayName(value = "유저 ID와 state를 가진 유저정보를 조회한다.")
     @Test
-    public void findByUserIdAndState() {
+    void findByUserIdAndState() {
         //given
         UserInfo userInfo1 = createUserInfo("nickname1", "email1@gmail.com",
             UserInfoRole.ROLE_USER, UserInfoState.ACTIVE);
@@ -38,7 +38,7 @@ class UserInfoRepositoryTest extends IntegrationTestSupport {
 
     @DisplayName(value = "닉네임과 상태로 활성화된 유저가 존재하는지 확인한다.")
     @Test
-    public void existsByNicknameAndState() {
+    void existsByNicknameAndState() {
         //given
         String nickname = "nickname1";
         UserInfo userInfo1 = createUserInfo(nickname, "email1@gmail.com",
