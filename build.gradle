@@ -6,6 +6,7 @@ plugins {
   // actuator info git
   // https://plugins.gradle.org/plugin/com.gorylenko.gradle-git-properties
   id 'com.gorylenko.gradle-git-properties' version '2.4.2'
+  id "org.sonarqube" version "5.1.0.4882"
 }
 
 group = 'ds.project'
@@ -99,6 +100,14 @@ tasks.named('test') {
 
 jacoco {
   toolVersion = "0.8.12"
+}
+
+sonar {
+  properties {
+    property "sonar.projectKey", "wcorn_toy"
+    property "sonar.organization", "wcorn-sonar-cloud"
+    property "sonar.host.url", "https://sonarcloud.io"
+  }
 }
 
 jacocoTestReport {
