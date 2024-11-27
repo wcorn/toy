@@ -3,6 +3,8 @@ package ds.project.toy.domain.product.entity;
 import ds.project.toy.domain.product.vo.CategoryState;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,6 +26,7 @@ public class Category {
     private Long categoryId;
     @Column(name = "content")
     private String content;
+    @Enumerated(EnumType.STRING)
     @Column(name = "state")
     private CategoryState categoryState;
 

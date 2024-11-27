@@ -24,12 +24,15 @@ public enum ResponseCode {
     NOTFOUND_ADMIN("ADMIN-ERR-001", "존재하지 않은 관리자입니다."),
     FAILED_ADMIN_LOGIN("ADMIN-ERR-002","아이디 또는 비밀번호가 잘못 되었습니다."),
 
+    //PRODUCT
+    MAX_IMAGE_COUNT_EXCEEDED("PRODUCT-ERR-001","이미지 개수는 10개를 초과할 수 없습니다."),
+    NOT_FOUND_CATEGORY("PRODUCT-ERR-002", "제품 카테고리를 찾을 수 없습니다."),
+
     //GLOBAL
     BAD_REQUEST("GLB-ERR-001", "잘못된 요청입니다."),
     METHOD_NOT_ALLOWED("GLB-ERR-002", "허용되지 않은 메서드입니다."),
     INTERNAL_SERVER_ERROR("GLB-ERR-003", "내부 서버 오류입니다."),
-    NOT_IMAGE("GLB-ERR-004","이미지 파일이 아닙니다.")
-    ;
+    NOT_IMAGE("GLB-ERR-004","이미지 파일이 아닙니다.");
     private final String code;
     private final String message;
 

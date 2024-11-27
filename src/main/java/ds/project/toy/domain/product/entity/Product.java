@@ -1,5 +1,7 @@
 package ds.project.toy.domain.product.entity;
 
+import ds.project.toy.api.service.product.dto.PostProductServiceDto;
+import ds.project.toy.domain.product.vo.ProductState;
 import ds.project.toy.domain.product.vo.SellingStatus;
 import ds.project.toy.domain.user.entity.UserInfo;
 import jakarta.persistence.Column;
@@ -48,6 +50,9 @@ public class Product {
     @Enumerated(EnumType.STRING)
     @Column(name = "selling_status")
     private SellingStatus sellingStatus;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "state")
+    private ProductState productState;
     @Column(name = "created_at")
     @CreatedDate
     private LocalDateTime createdAt;
@@ -57,9 +62,8 @@ public class Product {
 
     @Builder
     private Product(Long productId, Category category, UserInfo userInfo, String title,
-        String content,
-        Long price, Long view, SellingStatus sellingStatus, LocalDateTime createdAt,
-        LocalDateTime updatedAt) {
+        String content, Long price, Long view, SellingStatus sellingStatus,
+        ProductState productState, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.productId = productId;
         this.category = category;
         this.userInfo = userInfo;
@@ -68,13 +72,14 @@ public class Product {
         this.price = price;
         this.view = view;
         this.sellingStatus = sellingStatus;
+        this.productState = productState;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
 
     public static Product of(Category category, UserInfo userInfo, String title,
         String content, Long price, Long view, SellingStatus sellingStatus,
-        LocalDateTime createdAt, LocalDateTime updatedAt) {
+        ProductState productState, LocalDateTime createdAt, LocalDateTime updatedAt) {
         return Product.builder()
             .category(category)
             .userInfo(userInfo)
@@ -83,8 +88,24 @@ public class Product {
             .price(price)
             .view(view)
             .sellingStatus(sellingStatus)
+            .productState(productState)
             .createdAt(createdAt)
             .updatedAt(updatedAt)
+            .build();
+    }
+
+    public static Product create(PostProductServiceDto dto, UserInfo userInfo, Category category) {
+        return Product.builder()
+            .userInfo(userInfo)
+            .category(category)
+            .title(dto.getTitle())
+            .content(dto.getContent())
+            .price(dto.getPrice())
+            .createdAt(LocalDateTime.now())
+            .updatedAt(LocalDateTime.now())
+            .sellingStatus(SellingStatus.SELL)
+            .productState(ProductState.ACTIVE)
+            .view(0L)
             .build();
     }
 }
