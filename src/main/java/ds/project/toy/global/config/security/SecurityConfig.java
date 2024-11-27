@@ -69,6 +69,7 @@ public class SecurityConfig {
                 .requestMatchers("/login/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth/token/reissue","/admin/login").permitAll()
                 .requestMatchers("/member/**").hasRole(UserInfoRole.ROLE_USER.getName())
+                .requestMatchers(HttpMethod.POST, "/product/**").hasRole(UserInfoRole.ROLE_USER.getName())
                 .requestMatchers("/**").hasRole(UserInfoRole.ROLE_ADMIN.getName())
                 .anyRequest().authenticated()
             )
