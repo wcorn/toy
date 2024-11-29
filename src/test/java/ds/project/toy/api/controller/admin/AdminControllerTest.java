@@ -3,16 +3,21 @@ package ds.project.toy.api.controller.admin;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ds.project.toy.ControllerTestSupport;
 import ds.project.toy.api.controller.admin.dto.request.AdminLoginRequest;
+import ds.project.toy.api.controller.admin.dto.response.GetCategoryResponse;
+import ds.project.toy.domain.product.vo.CategoryState;
 import ds.project.toy.global.common.vo.AuthToken;
+import java.util.Collections;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 
 
 class AdminControllerTest extends ControllerTestSupport {
@@ -37,6 +42,26 @@ class AdminControllerTest extends ControllerTestSupport {
             .andExpectAll(
                 jsonPath("$.accessToken").value(authToken.getAccessToken()),
                 jsonPath("$.refreshToken").value(authToken.getRefreshToken())
+            );
+    }
+
+    @DisplayName(value = "관리자가 카테고리 목록을 조회한다.")
+    @Test
+    void getCategory() throws Exception {
+        //given
+        GetCategoryResponse response = GetCategoryResponse.of(1L, "전자기기",
+            CategoryState.ACTIVE.getName());
+        //when
+        given(adminService.getCategory()).willReturn(Collections.singletonList(response));
+        //then
+        mockMvc.perform(
+                get("/admin/product/category")
+            )
+            .andExpect(status().isOk())
+            .andExpectAll(
+                jsonPath("$[0].categoryId").value(response.getCategoryId()),
+                jsonPath("$[0].categoryName").value(response.getCategoryName()),
+                jsonPath("$[0].categoryState").value(response.getCategoryState())
             );
     }
 }
