@@ -1,15 +1,14 @@
 package ds.project.toy.api.controller.admin;
 
 import ds.project.toy.api.controller.admin.dto.request.AdminLoginRequest;
+import ds.project.toy.api.controller.admin.dto.response.GetCategoryResponse;
 import ds.project.toy.api.service.admin.AdminService;
 import ds.project.toy.global.common.vo.AuthToken;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,5 +21,10 @@ public class AdminController {
     public ResponseEntity<AuthToken> adminLogin(
         @Valid @RequestBody AdminLoginRequest request) {
         return ResponseEntity.ok(adminService.adminLogin(request.toServiceDto()));
+    }
+
+    @GetMapping("/product/category")
+    public ResponseEntity<List<GetCategoryResponse>> getCategory() {
+        return ResponseEntity.ok(adminService.getCategory());
     }
 }
