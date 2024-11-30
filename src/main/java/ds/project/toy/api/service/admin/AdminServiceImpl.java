@@ -1,7 +1,9 @@
 package ds.project.toy.api.service.admin;
 
 import ds.project.toy.api.controller.admin.dto.response.GetCategoryResponse;
+import ds.project.toy.api.controller.admin.dto.response.PostCategoryResponse;
 import ds.project.toy.api.service.admin.dto.AdminLoginServiceDto;
+import ds.project.toy.api.service.admin.dto.PostCategoryServiceDto;
 import ds.project.toy.domain.product.entity.Category;
 import ds.project.toy.domain.product.repository.CategoryRepository;
 import ds.project.toy.domain.user.entity.AdminLogin;
@@ -11,7 +13,6 @@ import ds.project.toy.global.common.exception.ResponseCode;
 import ds.project.toy.global.common.vo.AuthToken;
 import ds.project.toy.global.config.security.jwt.JwtTokenProvider;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -42,6 +43,13 @@ public class AdminServiceImpl implements AdminService {
         return getCategories().stream().map(
             GetCategoryResponse::fromCategory
         ).toList();
+    }
+
+    @Transactional
+    @Override
+    public PostCategoryResponse postCategory(PostCategoryServiceDto dto) {
+        return PostCategoryResponse.of(
+            categoryRepository.save(Category.create(dto.getContent())).getCategoryId());
     }
 
     private List<Category> getCategories() {

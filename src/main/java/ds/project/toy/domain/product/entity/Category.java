@@ -43,4 +43,11 @@ public class Category {
             .categoryState(categoryState)
             .build();
     }
+
+    public static Category create(String content) {
+        return Category.builder()
+            .content(content)
+            .categoryState(CategoryState.ACTIVE)
+            .build();
+    }
 }
