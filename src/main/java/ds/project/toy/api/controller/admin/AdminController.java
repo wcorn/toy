@@ -1,7 +1,9 @@
 package ds.project.toy.api.controller.admin;
 
 import ds.project.toy.api.controller.admin.dto.request.AdminLoginRequest;
+import ds.project.toy.api.controller.admin.dto.request.PostCategoryRequest;
 import ds.project.toy.api.controller.admin.dto.response.GetCategoryResponse;
+import ds.project.toy.api.controller.admin.dto.response.PostCategoryResponse;
 import ds.project.toy.api.service.admin.AdminService;
 import ds.project.toy.global.common.vo.AuthToken;
 import jakarta.validation.Valid;
@@ -26,5 +28,11 @@ public class AdminController {
     @GetMapping("/product/category")
     public ResponseEntity<List<GetCategoryResponse>> getCategory() {
         return ResponseEntity.ok(adminService.getCategory());
+    }
+    @PostMapping("/product/category")
+    public ResponseEntity<PostCategoryResponse> postCategory(
+        @Valid @RequestBody PostCategoryRequest request
+    ) {
+        return ResponseEntity.ok(adminService.postCategory(request.toService()));
     }
 }

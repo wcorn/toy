@@ -4,7 +4,9 @@ import static org.assertj.core.api.Assertions.*;
 
 import ds.project.toy.IntegrationTestSupport;
 import ds.project.toy.api.controller.admin.dto.response.GetCategoryResponse;
+import ds.project.toy.api.controller.admin.dto.response.PostCategoryResponse;
 import ds.project.toy.api.service.admin.dto.AdminLoginServiceDto;
+import ds.project.toy.api.service.admin.dto.PostCategoryServiceDto;
 import ds.project.toy.domain.product.entity.Category;
 import ds.project.toy.domain.product.vo.CategoryState;
 import ds.project.toy.domain.user.entity.AdminLogin;
@@ -86,16 +88,31 @@ class AdminServiceTest extends IntegrationTestSupport {
         //given
         Category category1 = createCategory("전자기기", CategoryState.ACTIVE);
         Category category2 = createCategory("가전", CategoryState.INACTIVE);
-        categoryRepository.saveAll(List.of(category1, category2));
+        List<Category> categories = categoryRepository.saveAll(List.of(category1, category2));
         //when
         List<GetCategoryResponse> response = adminService.getCategory();
         //then
         assertThat(response)
-            .extracting("categoryId","categoryName","categoryState")
+            .extracting("categoryId", "categoryName", "categoryState")
             .containsExactly(
-                tuple(1L,"전자기기","활동"),
-                tuple(2L,"가전","비활동")
+                tuple(categories.get(0).getCategoryId(), "전자기기", "활동"),
+                tuple(categories.get(1).getCategoryId(), "가전", "비활동")
             );
+    }
+
+    @DisplayName(value = "카테고리를 등록한다.")
+    @Test
+    void postCategory() {
+        //given
+        PostCategoryServiceDto dto = PostCategoryServiceDto.of("전자기기");
+
+        //when
+        PostCategoryResponse response = adminService.postCategory(dto);
+        //then
+        List<Category> categories = categoryRepository.findAll();
+        assertThat(response.getCategoryId()).isEqualTo(categories.get(0).getCategoryId());
+        assertThat(categories).extracting("content", "categoryState")
+            .containsExactly(tuple(dto.getContent(), CategoryState.ACTIVE));
     }
 
     private Category createCategory(String content, CategoryState state) {
