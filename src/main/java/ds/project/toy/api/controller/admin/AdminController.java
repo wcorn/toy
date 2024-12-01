@@ -1,10 +1,12 @@
 package ds.project.toy.api.controller.admin;
 
 import ds.project.toy.api.controller.admin.dto.request.AdminLoginRequest;
+import ds.project.toy.api.controller.admin.dto.request.DeleteCategoryRequest;
 import ds.project.toy.api.controller.admin.dto.request.PostCategoryRequest;
 import ds.project.toy.api.controller.admin.dto.response.GetCategoryResponse;
 import ds.project.toy.api.controller.admin.dto.response.PostCategoryResponse;
 import ds.project.toy.api.service.admin.AdminService;
+import ds.project.toy.global.common.api.CustomResponseCode;
 import ds.project.toy.global.common.vo.AuthToken;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -29,10 +31,19 @@ public class AdminController {
     public ResponseEntity<List<GetCategoryResponse>> getCategory() {
         return ResponseEntity.ok(adminService.getCategory());
     }
+
     @PostMapping("/product/category")
     public ResponseEntity<PostCategoryResponse> postCategory(
         @Valid @RequestBody PostCategoryRequest request
     ) {
         return ResponseEntity.ok(adminService.postCategory(request.toService()));
+    }
+
+    @DeleteMapping("/product/category")
+    public ResponseEntity<CustomResponseCode> deleteCategory(
+        @Valid @RequestBody DeleteCategoryRequest request
+    ) {
+        adminService.deleteCategory(request.toService());
+        return ResponseEntity.ok(CustomResponseCode.SUCCESS);
     }
 }
