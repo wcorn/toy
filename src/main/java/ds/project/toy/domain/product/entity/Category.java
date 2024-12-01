@@ -50,4 +50,8 @@ public class Category {
             .categoryState(CategoryState.ACTIVE)
             .build();
     }
+
+    public void delete() {
+        this.categoryState = CategoryState.INACTIVE;
+    }
 }

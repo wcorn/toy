@@ -3,6 +3,7 @@ package ds.project.toy.api.service.admin;
 import ds.project.toy.api.controller.admin.dto.response.GetCategoryResponse;
 import ds.project.toy.api.controller.admin.dto.response.PostCategoryResponse;
 import ds.project.toy.api.service.admin.dto.AdminLoginServiceDto;
+import ds.project.toy.api.service.admin.dto.DeleteCategoryServiceDto;
 import ds.project.toy.api.service.admin.dto.PostCategoryServiceDto;
 import ds.project.toy.domain.product.entity.Category;
 import ds.project.toy.domain.product.repository.CategoryRepository;
@@ -50,6 +51,18 @@ public class AdminServiceImpl implements AdminService {
     public PostCategoryResponse postCategory(PostCategoryServiceDto dto) {
         return PostCategoryResponse.of(
             categoryRepository.save(Category.create(dto.getContent())).getCategoryId());
+    }
+
+    @Transactional
+    @Override
+    public void deleteCategory(DeleteCategoryServiceDto dto) {
+        Category category = categoryFindById(dto.getCategoryId());
+        category.delete();
+    }
+
+    private Category categoryFindById(Long categoryId) {
+        return categoryRepository.findById(categoryId)
+            .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_CATEGORY));
     }
 
     private List<Category> getCategories() {
