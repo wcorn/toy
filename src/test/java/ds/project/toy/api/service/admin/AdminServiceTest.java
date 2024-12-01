@@ -6,6 +6,7 @@ import ds.project.toy.IntegrationTestSupport;
 import ds.project.toy.api.controller.admin.dto.response.GetCategoryResponse;
 import ds.project.toy.api.controller.admin.dto.response.PostCategoryResponse;
 import ds.project.toy.api.service.admin.dto.AdminLoginServiceDto;
+import ds.project.toy.api.service.admin.dto.DeleteCategoryServiceDto;
 import ds.project.toy.api.service.admin.dto.PostCategoryServiceDto;
 import ds.project.toy.domain.product.entity.Category;
 import ds.project.toy.domain.product.vo.CategoryState;
@@ -113,6 +114,20 @@ class AdminServiceTest extends IntegrationTestSupport {
         assertThat(response.getCategoryId()).isEqualTo(categories.get(0).getCategoryId());
         assertThat(categories).extracting("content", "categoryState")
             .containsExactly(tuple(dto.getContent(), CategoryState.ACTIVE));
+    }
+
+    @DisplayName(value = "카테고리를 삭제한다.")
+    @Test
+    void deleteCategory() {
+        //given
+        Category category = categoryRepository.save(createCategory("전자기기", CategoryState.ACTIVE));
+        DeleteCategoryServiceDto dto = DeleteCategoryServiceDto.of(category.getCategoryId());
+        //when
+        adminService.deleteCategory(dto);
+        //then
+        List<Category> categories = categoryRepository.findAll();
+        assertThat(categories).extracting("content", "categoryState")
+            .containsExactly(tuple("전자기기", CategoryState.INACTIVE));
     }
 
     private Category createCategory(String content, CategoryState state) {

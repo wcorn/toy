@@ -1,0 +1,26 @@
+package ds.project.toy.domain.product.entity;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import ds.project.toy.IntegrationTestSupport;
+import ds.project.toy.domain.product.vo.CategoryState;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+class CategoryTest extends IntegrationTestSupport {
+
+    @DisplayName(value = " 엔티티 상태를 삭제로 변경한다.")
+    @Test
+    void delete() {
+        //given
+        Category category = createCategory("전자기기", CategoryState.ACTIVE);
+        //when
+        category.delete();
+        //then
+        assertThat(category.getCategoryState()).isEqualTo(CategoryState.INACTIVE);
+    }
+
+    private Category createCategory(String content, CategoryState state) {
+        return Category.of(content, state);
+    }
+}

@@ -3,6 +3,7 @@ package ds.project.toy.api.controller.admin;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -10,10 +11,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import ds.project.toy.ControllerTestSupport;
 import ds.project.toy.api.controller.admin.dto.request.AdminLoginRequest;
+import ds.project.toy.api.controller.admin.dto.request.DeleteCategoryRequest;
 import ds.project.toy.api.controller.admin.dto.request.PostCategoryRequest;
 import ds.project.toy.api.controller.admin.dto.response.GetCategoryResponse;
 import ds.project.toy.api.controller.admin.dto.response.PostCategoryResponse;
 import ds.project.toy.domain.product.vo.CategoryState;
+import ds.project.toy.global.common.api.CustomResponseCode;
 import ds.project.toy.global.common.vo.AuthToken;
 import java.util.Collections;
 import org.junit.jupiter.api.DisplayName;
@@ -81,6 +84,25 @@ class AdminControllerTest extends ControllerTestSupport {
             .andExpect(status().isOk())
             .andExpectAll(
                 jsonPath("$.categoryId").value(response.getCategoryId())
+            );
+        //then
+
+    }
+
+    @DisplayName(value = "관리자가 카테고리를 삭제한다.")
+    @Test
+    void deleteCategory() throws Exception {
+        //given
+        DeleteCategoryRequest request = DeleteCategoryRequest.of(1L);
+        //when
+        mockMvc.perform(
+                delete("/admin/product/category")
+                    .content(objectMapper.writeValueAsString(request))
+                    .contentType(MediaType.APPLICATION_JSON).with(csrf())
+            )
+            .andExpect(status().isOk())
+            .andExpectAll(
+                jsonPath("$.message").value(CustomResponseCode.SUCCESS.getMessage())
             );
         //then
 
