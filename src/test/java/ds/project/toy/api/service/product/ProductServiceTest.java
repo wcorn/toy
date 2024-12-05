@@ -1,14 +1,16 @@
 package ds.project.toy.api.service.product;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import ds.project.toy.IntegrationTestSupport;
+import ds.project.toy.api.controller.product.dto.response.GetProductResponse;
 import ds.project.toy.api.controller.product.dto.response.PostProductResponse;
+import ds.project.toy.api.service.admin.dto.GetProductServiceDto;
 import ds.project.toy.api.service.product.dto.PostProductServiceDto;
 import ds.project.toy.domain.product.entity.Category;
 import ds.project.toy.domain.product.entity.Product;
@@ -18,7 +20,7 @@ import ds.project.toy.domain.product.vo.SellingStatus;
 import ds.project.toy.domain.user.entity.UserInfo;
 import ds.project.toy.domain.user.vo.UserInfoRole;
 import ds.project.toy.domain.user.vo.UserInfoState;
-import java.util.ArrayList;
+import ds.project.toy.global.common.vo.RedisPrefix;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -53,6 +55,65 @@ class ProductServiceTest extends IntegrationTestSupport {
         assertThat(product.get().getProductState()).isEqualTo(ProductState.ACTIVE);
         assertThat(product.get().getView()).isZero();
         verify(minioUtil, times(files.size())).uploadFile(image);
+    }
+
+    @DisplayName(value = "등록된 제품 페이지를 조회한다.")
+    @Test
+    void getProduct() {
+        //given
+        UserInfo productOwner = userInfoRepository.save(createUser());
+        UserInfo productViewer = userInfoRepository.save(createUser());
+        Category category = categoryRepository.save(createCategory("전자기기"));
+        Product product = productRepository.save(createProduct(productOwner, category));
+        GetProductServiceDto dto = GetProductServiceDto.of(product.getProductId(),
+            productViewer.getUserId());
+        given(redisUtil.hasKey(RedisPrefix.VIEW,
+            String.valueOf(productViewer.getUserId()))).willReturn(false);
+        //when
+        GetProductResponse response = productService.getProduct(dto);
+        //then
+        verify(redisUtil, times(1)).setSetWithExpire(any(), any(), any(), any());
+        assertThat(response.getProductView()).isEqualTo(1);
+    }
+
+    @DisplayName(value = "등록된 제품 페이지를 조회할 때 본인이 조회한 경우 조회수가 오르지 않는다.")
+    @Test
+    void getProductWithViewerIsProductOwner() {
+        //given
+        UserInfo productOwner = userInfoRepository.save(createUser());
+        Category category = categoryRepository.save(createCategory("전자기기"));
+        Product product = productRepository.save(createProduct(productOwner, category));
+        GetProductServiceDto dto = GetProductServiceDto.of(product.getProductId(),
+            productOwner.getUserId());
+        given(redisUtil.hasKey(RedisPrefix.VIEW,
+            String.valueOf(productOwner.getUserId()))).willReturn(false);
+        //when
+        GetProductResponse response = productService.getProduct(dto);
+        //then
+        assertThat(response.getProductView()).isZero();
+    }
+
+    @DisplayName(value = "등록된 제품 페이지를 조회할 때 이미 조회 했을 경우 조회수가 오르지 않는다.")
+    @Test
+    void getProductAlreadyViewed() {
+        //given
+        UserInfo productOwner = userInfoRepository.save(createUser());
+        UserInfo productViewer = userInfoRepository.save(createUser());
+        Category category = categoryRepository.save(createCategory("전자기기"));
+        Product product = productRepository.save(createProduct(productOwner, category));
+        GetProductServiceDto dto = GetProductServiceDto.of(product.getProductId(),
+            productViewer.getUserId());
+        given(redisUtil.hasKey(RedisPrefix.VIEW,
+            String.valueOf(productViewer.getUserId()))).willReturn(true);
+        //when
+        GetProductResponse response = productService.getProduct(dto);
+        //then
+        assertThat(response.getProductView()).isZero();
+    }
+
+    private Product createProduct(UserInfo productOwner, Category category) {
+        return Product.of(category, productOwner, "제목", "내용", 10000L,
+            0L, SellingStatus.SELL, ProductState.ACTIVE);
     }
 
     private Category createCategory(String content) {

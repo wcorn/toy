@@ -1,11 +1,14 @@
 package ds.project.toy.api.service.product;
 
+import ds.project.toy.api.controller.product.dto.response.GetProductResponse;
 import ds.project.toy.api.controller.product.dto.response.PostProductResponse;
+import ds.project.toy.api.service.admin.dto.GetProductServiceDto;
 import ds.project.toy.api.service.product.dto.PostProductServiceDto;
 import ds.project.toy.domain.product.entity.Category;
 import ds.project.toy.domain.product.entity.Product;
 import ds.project.toy.domain.product.entity.ProductImage;
 import ds.project.toy.domain.product.repository.CategoryRepository;
+import ds.project.toy.domain.product.repository.InterestProductRepository;
 import ds.project.toy.domain.product.repository.ProductImageRepository;
 import ds.project.toy.domain.product.repository.ProductRepository;
 import ds.project.toy.domain.user.entity.UserInfo;
@@ -13,7 +16,10 @@ import ds.project.toy.domain.user.repository.UserInfoRepository;
 import ds.project.toy.domain.user.vo.UserInfoState;
 import ds.project.toy.global.common.exception.CustomException;
 import ds.project.toy.global.common.exception.ResponseCode;
+import ds.project.toy.global.common.vo.RedisPrefix;
 import ds.project.toy.global.util.MinioUtil;
+import ds.project.toy.global.util.RedisUtil;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +39,8 @@ public class ProductServiceImpl implements ProductService {
     private final UserInfoRepository userInfoRepository;
     private final ProductImageRepository productImageRepository;
     private final MinioUtil minioUtil;
+    private final InterestProductRepository interestProductRepository;
+    private final RedisUtil redisUtil;
 
     @Transactional
     @Override
@@ -42,6 +50,30 @@ public class ProductServiceImpl implements ProductService {
         Product product = productSave(Product.create(dto, userInfo, category));
         saveProductImages(product, dto.getImages());
         return PostProductResponse.of(product.getProductId());
+    }
+
+    @Transactional
+    @Override
+    public GetProductResponse getProduct(GetProductServiceDto of) {
+        Product product = productFindBy(of.getProductId());
+        UserInfo userInfo = userFindBy(of.getUserId());
+        if (!product.getUserInfo().getUserId().equals(userInfo.getUserId()) &&
+            !redisUtil.hasKey(RedisPrefix.VIEW, String.valueOf(userInfo.getUserId()))) {
+            product.viewCount();
+            redisUtil.setSetWithExpire(RedisPrefix.VIEW, String.valueOf(userInfo.getUserId()),
+                product.getProductId(), Duration.ofHours(6));
+        }
+        boolean isInterest = isInterest(product, userInfo);
+        return GetProductResponse.of(product, isInterest);
+    }
+
+    private boolean isInterest(Product product, UserInfo userInfo) {
+        return interestProductRepository.existsByUserInfoAndProduct(userInfo, product);
+    }
+
+    private Product productFindBy(Long productId) {
+        return productRepository.findById(productId)
+            .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_PRODUCT));
     }
 
     private void saveProductImages(Product product, List<MultipartFile> images) {

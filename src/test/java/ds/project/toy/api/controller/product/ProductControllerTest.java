@@ -3,14 +3,18 @@ package ds.project.toy.api.controller.product;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ds.project.toy.ControllerTestSupport;
 import ds.project.toy.api.controller.product.dto.request.PostProductRequest;
+import ds.project.toy.api.controller.product.dto.response.GetProductResponse;
 import ds.project.toy.api.controller.product.dto.response.PostProductResponse;
 import ds.project.toy.global.common.exception.ResponseCode;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
@@ -162,5 +166,49 @@ class ProductControllerTest extends ControllerTestSupport {
                 jsonPath("$.message").value(ResponseCode.NOT_IMAGE.getMessage())
             );
         //then
+    }
+
+    @DisplayName(value = "제품을 조회한다.")
+    @WithMockUser(roles = "USER", username = "1")
+    @Test
+    void getProduct() throws Exception {
+        //given
+        Long userId = 1L;
+        String userNickname = "testUser";
+        String userProfileImageUrl = "http://example.com/profile.jpg";
+        Long productId = 101L;
+        String productTitle = "Sample Product";
+        String productContent = "This is a sample product description.";
+        Long productPrice = 1999L;
+        Integer productInterestCount = 10;
+        Long productView = 150L;
+        List<String> productImageUrls = Collections.singletonList("http://example.com/image1.jpg");
+        String productDateTime = "2024-01-01T10:00:00";
+        boolean interested = true;
+        GetProductResponse response = GetProductResponse.of(userId, userNickname,
+            userProfileImageUrl, productId, productTitle, productContent, productPrice,
+            productInterestCount, productView, productImageUrls, productDateTime, interested);
+        given(productService.getProduct(any())).willReturn(response);
+        //when
+        mockMvc.perform(
+                get("/product/{productId}", productId)
+                    .with(csrf())
+            ).andExpect(status().isOk())
+            .andExpectAll(
+                jsonPath("$.userId").value(userId),
+                jsonPath("$.userNickname").value(userNickname),
+                jsonPath("$.userProfileImageUrl").value(userProfileImageUrl),
+                jsonPath("$.productId").value(productId),
+                jsonPath("$.productTitle").value(productTitle),
+                jsonPath("$.productContent").value(productContent),
+                jsonPath("$.productPrice").value(productPrice.intValue()),
+                jsonPath("$.productInterestCount").value(productInterestCount),
+                jsonPath("$.productView").value(productView.intValue()),
+                jsonPath("$.productImageUrls[0]").value(productImageUrls.get(0)),
+                jsonPath("$.productDateTime").value(productDateTime),
+                jsonPath("$.interested").value(interested)
+            );
+        //then
+
     }
 }

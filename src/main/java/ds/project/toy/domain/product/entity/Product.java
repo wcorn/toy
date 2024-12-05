@@ -14,7 +14,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -60,10 +62,16 @@ public class Product {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<InterestProduct> interestProducts;
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<ProductImage> productImages;
+
     @Builder
     private Product(Long productId, Category category, UserInfo userInfo, String title,
         String content, Long price, Long view, SellingStatus sellingStatus,
-        ProductState productState, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        ProductState productState, LocalDateTime createdAt, LocalDateTime updatedAt,
+        List<InterestProduct> interestProducts, List<ProductImage> productImages) {
         this.productId = productId;
         this.category = category;
         this.userInfo = userInfo;
@@ -73,13 +81,15 @@ public class Product {
         this.view = view;
         this.sellingStatus = sellingStatus;
         this.productState = productState;
+        this.interestProducts = interestProducts;
+        this.productImages = productImages;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
 
     public static Product of(Category category, UserInfo userInfo, String title,
         String content, Long price, Long view, SellingStatus sellingStatus,
-        ProductState productState, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        ProductState productState) {
         return Product.builder()
             .category(category)
             .userInfo(userInfo)
@@ -89,8 +99,8 @@ public class Product {
             .view(view)
             .sellingStatus(sellingStatus)
             .productState(productState)
-            .createdAt(createdAt)
-            .updatedAt(updatedAt)
+            .createdAt(LocalDateTime.now())
+            .updatedAt(LocalDateTime.now())
             .build();
     }
 
@@ -107,5 +117,9 @@ public class Product {
             .productState(ProductState.ACTIVE)
             .view(0L)
             .build();
+    }
+
+    public void viewCount() {
+        view++;
     }
 }
