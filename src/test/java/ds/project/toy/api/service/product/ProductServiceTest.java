@@ -1,7 +1,6 @@
 package ds.project.toy.api.service.product;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -11,8 +10,10 @@ import ds.project.toy.IntegrationTestSupport;
 import ds.project.toy.api.controller.product.dto.response.GetProductResponse;
 import ds.project.toy.api.controller.product.dto.response.PostProductResponse;
 import ds.project.toy.api.service.admin.dto.GetProductServiceDto;
+import ds.project.toy.api.service.product.dto.PostInterestProductServiceDto;
 import ds.project.toy.api.service.product.dto.PostProductServiceDto;
 import ds.project.toy.domain.product.entity.Category;
+import ds.project.toy.domain.product.entity.InterestProduct;
 import ds.project.toy.domain.product.entity.Product;
 import ds.project.toy.domain.product.vo.CategoryState;
 import ds.project.toy.domain.product.vo.ProductState;
@@ -109,6 +110,27 @@ class ProductServiceTest extends IntegrationTestSupport {
         GetProductResponse response = productService.getProduct(dto);
         //then
         assertThat(response.getProductView()).isZero();
+    }
+
+    @DisplayName(value = "관심물품을 등록한다.")
+    @Test
+    void postInterestProduct() {
+        //given
+        UserInfo productViewer = userInfoRepository.save(createUser());
+        UserInfo productOwner = userInfoRepository.save(createUser());
+        Category category = categoryRepository.save(createCategory("전자기기"));
+        Product product = productRepository.save(createProduct(productOwner, category));
+        PostInterestProductServiceDto dto = PostInterestProductServiceDto.of(product.getProductId(),
+            productViewer.getUserId());
+        //when
+        productService.postInterestProduct(dto);
+        //then
+        List<InterestProduct> interestProducts = interestProductRepository.findAll();
+        assertThat(interestProducts).hasSize(1);
+        assertThat(interestProducts.get(0).getProduct().getProductId()).isEqualTo(
+            product.getProductId());
+        assertThat(interestProducts.get(0).getUserInfo().getUserId()).isEqualTo(
+            productViewer.getUserId());
     }
 
     private Product createProduct(UserInfo productOwner, Category category) {
