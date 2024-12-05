@@ -39,9 +39,8 @@ public class InterestProduct {
         this.userInfo = userInfo;
     }
 
-    public static InterestProduct of(Long interestProductId, Product product, UserInfo userInfo) {
+    public static InterestProduct of(Product product, UserInfo userInfo) {
         return InterestProduct.builder()
-            .interestProductId(interestProductId)
             .product(product)
             .userInfo(userInfo)
             .build();
