@@ -22,7 +22,7 @@ class AuthServiceTest extends IntegrationTestSupport {
     void reissuedToken() {
         //given
         UserInfo userInfo = userInfoRepository.save(
-            createUserInfo("nickname", "email", UserInfoRole.ROLE_USER, UserInfoState.ACTIVE));
+            createUserInfo());
         AuthToken authToken = createToken(userInfo.getUserId());
         ReissuedTokenServiceDto dto = ReissuedTokenServiceDto.of(authToken.getAccessToken(),
             authToken.getRefreshToken());
@@ -57,8 +57,8 @@ class AuthServiceTest extends IntegrationTestSupport {
         return jwtTokenProvider.createTokenAndStore(String.valueOf(id));
     }
 
-    private UserInfo createUserInfo(String nickname, String email,
-        UserInfoRole role, UserInfoState state) {
-        return UserInfo.of(nickname, email, "image.jpg",role, state);
+    private UserInfo createUserInfo() {
+        return UserInfo.of("nickname", "email", "image.jpg",
+            UserInfoRole.ROLE_USER, UserInfoState.ACTIVE);
     }
 }

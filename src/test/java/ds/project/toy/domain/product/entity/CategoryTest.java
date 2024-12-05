@@ -13,14 +13,14 @@ class CategoryTest extends IntegrationTestSupport {
     @Test
     void delete() {
         //given
-        Category category = createCategory("전자기기", CategoryState.ACTIVE);
+        Category category = createCategory();
         //when
         category.delete();
         //then
         assertThat(category.getCategoryState()).isEqualTo(CategoryState.INACTIVE);
     }
 
-    private Category createCategory(String content, CategoryState state) {
-        return Category.of(content, state);
+    private Category createCategory() {
+        return Category.of("전자기기", CategoryState.ACTIVE);
     }
 }
