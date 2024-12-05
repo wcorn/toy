@@ -27,6 +27,7 @@ public enum ResponseCode {
     //PRODUCT
     MAX_IMAGE_COUNT_EXCEEDED("PRODUCT-ERR-001","이미지 개수는 10개를 초과할 수 없습니다."),
     NOT_FOUND_CATEGORY("PRODUCT-ERR-002", "제품 카테고리를 찾을 수 없습니다."),
+    NOT_FOUND_PRODUCT("PRODUCT-ERR-003", "제품을 찾을 수 없습니다."),
 
     //GLOBAL
     BAD_REQUEST("GLB-ERR-001", "잘못된 요청입니다."),

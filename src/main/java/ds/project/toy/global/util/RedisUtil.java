@@ -17,6 +17,11 @@ public class RedisUtil {
         redisTemplate.opsForValue().set(createKey(prefix, key), value, duration);
     }
 
+    public void setSetWithExpire(RedisPrefix prefix, String key, Long productId,
+        Duration duration) {
+        redisTemplate.opsForSet().add(createKey(prefix, key), productId, duration);
+    }
+
     public String getValue(RedisPrefix prefix, String key) {
         return (String) redisTemplate.opsForValue().get(createKey(prefix, key));
     }
