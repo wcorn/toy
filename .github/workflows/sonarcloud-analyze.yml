@@ -26,8 +26,8 @@ jobs:
       - name: Build the project
         run: ./gradlew build
 
-      - name: Analyze with SonarCloud
-        uses: SonarSource/sonarcloud-github-action@master
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@master
         id: analyze-sonarcloud
         continue-on-error: true
         env:
