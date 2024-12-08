@@ -11,8 +11,8 @@ import ds.project.toy.ControllerTestSupport;
 import ds.project.toy.api.controller.product.dto.request.PostProductRequest;
 import ds.project.toy.api.controller.product.dto.response.GetProductResponse;
 import ds.project.toy.api.controller.product.dto.response.PostProductResponse;
+import ds.project.toy.global.common.api.CustomResponseCode;
 import ds.project.toy.global.common.exception.ResponseCode;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -207,6 +207,23 @@ class ProductControllerTest extends ControllerTestSupport {
                 jsonPath("$.productImageUrls[0]").value(productImageUrls.get(0)),
                 jsonPath("$.productDateTime").value(productDateTime),
                 jsonPath("$.interested").value(interested)
+            );
+        //then
+    }
+
+    @DisplayName(value = "관심 물품을 등록한다.")
+    @WithMockUser(roles = "USER", username = "1")
+    @Test
+    void postInterestProduct() throws Exception {
+        //given
+        Long productId = 1L;
+        //when
+        mockMvc.perform(
+                post("/product/{productId}/interest", productId)
+                    .with(csrf())
+            ).andExpect(status().isOk())
+            .andExpectAll(
+                jsonPath("$.message").value(CustomResponseCode.SUCCESS.getMessage())
             );
         //then
 

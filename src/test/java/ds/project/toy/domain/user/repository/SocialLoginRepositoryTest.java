@@ -23,9 +23,9 @@ class SocialLoginRepositoryTest extends IntegrationTestSupport {
         OAuth2Provider provider = OAuth2Provider.KAKAO;
         String socialId = "SocialId";
         SocialProvider socialProvider = socialProviderRepository.save(
-            createSocialProvider(provider, SocialProviderState.ACTIVE));
-        UserInfo userInfo = createUserInfo("nickname", "email",
-            UserInfoRole.ROLE_USER, UserInfoState.ACTIVE);
+            createSocialProvider(provider));
+        UserInfo userInfo = createUserInfo(
+        );
         socialLoginRepository.save(createSocialLogin(socialProvider, socialId, userInfo));
         //when
         Optional<SocialLogin> socialLogin = socialLoginRepository.findByProviderProviderAndSocialId(
@@ -36,17 +36,15 @@ class SocialLoginRepositoryTest extends IntegrationTestSupport {
         assertThat(socialLogin.get().getSocialId()).isEqualTo(socialId);
     }
 
-    private UserInfo createUserInfo(String nickname, String email,
-        UserInfoRole role, UserInfoState state) {
-        return UserInfo.of(nickname, email,"image.jpg", role, state);
+    private UserInfo createUserInfo() {
+        return UserInfo.of("nickname", "email","image.jpg", UserInfoRole.ROLE_USER, UserInfoState.ACTIVE);
     }
 
     private SocialLogin createSocialLogin(SocialProvider provider, String id, UserInfo userInfo) {
         return SocialLogin.of(provider, id, userInfo);
     }
 
-    private SocialProvider createSocialProvider(OAuth2Provider provider,
-        SocialProviderState state) {
-        return SocialProvider.of(provider, state);
+    private SocialProvider createSocialProvider(OAuth2Provider provider) {
+        return SocialProvider.of(provider, SocialProviderState.ACTIVE);
     }
 }

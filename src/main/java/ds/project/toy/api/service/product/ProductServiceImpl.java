@@ -3,8 +3,10 @@ package ds.project.toy.api.service.product;
 import ds.project.toy.api.controller.product.dto.response.GetProductResponse;
 import ds.project.toy.api.controller.product.dto.response.PostProductResponse;
 import ds.project.toy.api.service.admin.dto.GetProductServiceDto;
+import ds.project.toy.api.service.product.dto.PostInterestProductServiceDto;
 import ds.project.toy.api.service.product.dto.PostProductServiceDto;
 import ds.project.toy.domain.product.entity.Category;
+import ds.project.toy.domain.product.entity.InterestProduct;
 import ds.project.toy.domain.product.entity.Product;
 import ds.project.toy.domain.product.entity.ProductImage;
 import ds.project.toy.domain.product.repository.CategoryRepository;
@@ -65,6 +67,14 @@ public class ProductServiceImpl implements ProductService {
         }
         boolean isInterest = isInterest(product, userInfo);
         return GetProductResponse.of(product, isInterest);
+    }
+
+    @Transactional
+    @Override
+    public void postInterestProduct(PostInterestProductServiceDto of) {
+        UserInfo userInfo = userFindBy(of.getUserId());
+        Product product = productFindBy(of.getProductId());
+        interestProductRepository.save(InterestProduct.of(product, userInfo));
     }
 
     private boolean isInterest(Product product, UserInfo userInfo) {

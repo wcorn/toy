@@ -18,11 +18,11 @@ class UserInfoRepositoryTest extends IntegrationTestSupport {
     void findByUserIdAndState() {
         //given
         UserInfo userInfo1 = createUserInfo("nickname1", "email1@gmail.com",
-            UserInfoRole.ROLE_USER, UserInfoState.ACTIVE);
+            UserInfoState.ACTIVE);
         UserInfo userInfo2 = createUserInfo("nickname2", "email2@gmail.com",
-            UserInfoRole.ROLE_USER, UserInfoState.BAN);
+            UserInfoState.BAN);
         UserInfo userInfo3 = createUserInfo("nickname3", "email3@gmail.com",
-            UserInfoRole.ROLE_USER, UserInfoState.WITHDRAWN);
+            UserInfoState.WITHDRAWN);
         userInfoRepository.saveAll(List.of(userInfo1, userInfo2, userInfo3));
 
         //when
@@ -42,11 +42,11 @@ class UserInfoRepositoryTest extends IntegrationTestSupport {
         //given
         String nickname = "nickname1";
         UserInfo userInfo1 = createUserInfo(nickname, "email1@gmail.com",
-            UserInfoRole.ROLE_USER, UserInfoState.ACTIVE);
+            UserInfoState.ACTIVE);
         UserInfo userInfo2 = createUserInfo("nickname2", "email2@gmail.com",
-            UserInfoRole.ROLE_USER, UserInfoState.BAN);
+            UserInfoState.BAN);
         UserInfo userInfo3 = createUserInfo("nickname3", "email3@gmail.com",
-            UserInfoRole.ROLE_USER, UserInfoState.WITHDRAWN);
+            UserInfoState.WITHDRAWN);
         userInfoRepository.saveAll(List.of(userInfo1, userInfo2, userInfo3));
         //when
         boolean exists = userInfoRepository.existsByNicknameAndState(nickname, UserInfoState.ACTIVE);
@@ -55,7 +55,7 @@ class UserInfoRepositoryTest extends IntegrationTestSupport {
     }
 
     private UserInfo createUserInfo(String nickname, String email,
-        UserInfoRole role, UserInfoState state) {
-        return UserInfo.of(nickname, email, "image.jpg", role, state);
+        UserInfoState state) {
+        return UserInfo.of(nickname, email, "image.jpg", UserInfoRole.ROLE_USER, state);
     }
 }

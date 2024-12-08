@@ -22,7 +22,7 @@ class InterestProductRepositoryTest extends IntegrationTestSupport {
     void existsByUserInfoAndProduct() {
         //given
         UserInfo userInfo = userInfoRepository.save(createUser());
-        Category category = categoryRepository.save(createCategory("전자기가"));
+        Category category = categoryRepository.save(createCategory());
         Product product = productRepository.save(createProduct(userInfo, category));
         interestProductRepository.save(
             createInterestProduct(userInfo, product));
@@ -41,8 +41,8 @@ class InterestProductRepositoryTest extends IntegrationTestSupport {
             0L, SellingStatus.SELL, ProductState.ACTIVE);
     }
 
-    private Category createCategory(String content) {
-        return Category.of(content, CategoryState.ACTIVE);
+    private Category createCategory() {
+        return Category.of("전자기기", CategoryState.ACTIVE);
     }
 
     private UserInfo createUser() {

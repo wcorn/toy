@@ -5,6 +5,8 @@ import ds.project.toy.api.controller.product.dto.response.GetProductResponse;
 import ds.project.toy.api.controller.product.dto.response.PostProductResponse;
 import ds.project.toy.api.service.admin.dto.GetProductServiceDto;
 import ds.project.toy.api.service.product.ProductService;
+import ds.project.toy.api.service.product.dto.PostInterestProductServiceDto;
+import ds.project.toy.global.common.api.CustomResponseCode;
 import ds.project.toy.global.common.exception.CustomException;
 import ds.project.toy.global.common.exception.ResponseCode;
 import ds.project.toy.global.config.openapi.SwaggerBody;
@@ -62,6 +64,15 @@ public class ProductController {
     public ResponseEntity<GetProductResponse> getProduct(@PathVariable Long productId) {
         Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
         Long userId = Long.parseLong(loggedInUser.getName());
-        return ResponseEntity.ok(productService.getProduct(GetProductServiceDto.of(productId,userId)));
+        return ResponseEntity.ok(
+            productService.getProduct(GetProductServiceDto.of(productId, userId)));
+    }
+
+    @PostMapping(value = "/{productId}/interest")
+    public ResponseEntity<CustomResponseCode> postInterestProduct(@PathVariable Long productId) {
+        Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
+        Long userId = Long.parseLong(loggedInUser.getName());
+        productService.postInterestProduct(PostInterestProductServiceDto.of(productId,userId));
+        return ResponseEntity.ok(CustomResponseCode.SUCCESS);
     }
 }

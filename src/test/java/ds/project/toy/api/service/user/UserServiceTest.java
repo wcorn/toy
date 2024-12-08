@@ -37,9 +37,9 @@ class UserServiceTest extends IntegrationTestSupport {
         String prevNickname = "prev";
         String nextNickname = "nickname";
         SocialProvider socialProvider = socialProviderRepository.save(
-            createSocialProvider(OAuth2Provider.KAKAO, SocialProviderState.ACTIVE));
-        UserInfo userInfo = createUserInfo(prevNickname, "email",
-            UserInfoRole.ROLE_USER, UserInfoState.ACTIVE);
+            createSocialProvider());
+        UserInfo userInfo = createUserInfo(prevNickname
+        );
         socialLoginRepository.save(createSocialLogin(socialProvider, "id", userInfo));
 
         ChangeNicknameServiceDto dto = ChangeNicknameServiceDto.of(
@@ -58,9 +58,9 @@ class UserServiceTest extends IntegrationTestSupport {
         //given
         String nickname = "nickname";
         SocialProvider socialProvider = socialProviderRepository.save(
-            createSocialProvider(OAuth2Provider.KAKAO, SocialProviderState.ACTIVE));
-        UserInfo userInfo = createUserInfo(nickname, "email",
-            UserInfoRole.ROLE_USER, UserInfoState.ACTIVE);
+            createSocialProvider());
+        UserInfo userInfo = createUserInfo(nickname
+        );
         socialLoginRepository.save(createSocialLogin(socialProvider, "id", userInfo));
 
         ChangeNicknameServiceDto dto = ChangeNicknameServiceDto.of(nickname, userInfo.getUserId());
@@ -79,12 +79,12 @@ class UserServiceTest extends IntegrationTestSupport {
         String prevNickname = "prev";
         String duplicateNickname = "nickname";
         SocialProvider socialProvider = socialProviderRepository.save(
-            createSocialProvider(OAuth2Provider.KAKAO, SocialProviderState.ACTIVE));
-        UserInfo userInfo = createUserInfo(prevNickname, "email",
-            UserInfoRole.ROLE_USER, UserInfoState.ACTIVE);
+            createSocialProvider());
+        UserInfo userInfo = createUserInfo(prevNickname
+        );
         socialLoginRepository.save(createSocialLogin(socialProvider, "id1", userInfo));
-        UserInfo userInfo2 = createUserInfo(duplicateNickname, "email",
-            UserInfoRole.ROLE_USER, UserInfoState.ACTIVE);
+        UserInfo userInfo2 = createUserInfo(duplicateNickname
+        );
         socialLoginRepository.save(createSocialLogin(socialProvider, "id2", userInfo2));
 
         ChangeNicknameServiceDto dto = ChangeNicknameServiceDto.of(duplicateNickname,
@@ -103,8 +103,8 @@ class UserServiceTest extends IntegrationTestSupport {
         //given
         MockMultipartFile mockMultipartFile = new MockMultipartFile("image", "test.jpeg",
             MediaType.IMAGE_JPEG_VALUE, "test".getBytes());
-        UserInfo userInfo = userInfoRepository.save(createUserInfo("nickname", "email",
-            UserInfoRole.ROLE_USER, UserInfoState.ACTIVE));
+        UserInfo userInfo = userInfoRepository.save(createUserInfo("nickname"
+        ));
         ChangeProfileImageDto dto = ChangeProfileImageDto.of(
             userInfo.getUserId(), mockMultipartFile);
         String imageUrl = "image.url";
@@ -124,8 +124,8 @@ class UserServiceTest extends IntegrationTestSupport {
         //given
         MockMultipartFile mockMultipartFile = new MockMultipartFile("image", "test.jpeg",
             MediaType.IMAGE_JPEG_VALUE, "test".getBytes());
-        UserInfo userInfo = userInfoRepository.save(createUserInfo("nickname", "email", "image.jpg",
-            UserInfoRole.ROLE_USER, UserInfoState.ACTIVE));
+        UserInfo userInfo = userInfoRepository.save(createUserInfo("nickname", "email", "image.jpg"
+        ));
         ChangeProfileImageDto dto = ChangeProfileImageDto.of(
             userInfo.getUserId(), mockMultipartFile);
         String imageUrl = "changeImage.jpg";
@@ -147,8 +147,8 @@ class UserServiceTest extends IntegrationTestSupport {
         String nickname = "nickname";
         String email = "email@email.com";
         String profileImage = "profileImage.jpg";
-        UserInfo userInfo = userInfoRepository.save(createUserInfo(nickname, email, profileImage,
-            UserInfoRole.ROLE_USER, UserInfoState.ACTIVE));
+        UserInfo userInfo = userInfoRepository.save(createUserInfo(nickname, email, profileImage
+        ));
         GetUserProfileDto dto = GetUserProfileDto.of(userInfo.getUserId());
 
         //when
@@ -160,22 +160,19 @@ class UserServiceTest extends IntegrationTestSupport {
             .containsExactly(nickname, email, profileImage);
     }
 
-    private UserInfo createUserInfo(String nickname, String email,
-        UserInfoRole role, UserInfoState state) {
-        return UserInfo.of(nickname, email, role, state);
+    private UserInfo createUserInfo(String nickname) {
+        return UserInfo.of(nickname, "email", UserInfoRole.ROLE_USER, UserInfoState.ACTIVE);
     }
 
-    private UserInfo createUserInfo(String nickname, String email, String image,
-        UserInfoRole role, UserInfoState state) {
-        return UserInfo.of(nickname, email, image, role, state);
+    private UserInfo createUserInfo(String nickname, String email, String image) {
+        return UserInfo.of(nickname, email, image, UserInfoRole.ROLE_USER, UserInfoState.ACTIVE);
     }
 
     private SocialLogin createSocialLogin(SocialProvider provider, String id, UserInfo userInfo) {
         return SocialLogin.of(provider, id, userInfo);
     }
 
-    private SocialProvider createSocialProvider(OAuth2Provider provider,
-        SocialProviderState state) {
-        return SocialProvider.of(provider, state);
+    private SocialProvider createSocialProvider() {
+        return SocialProvider.of(OAuth2Provider.KAKAO, SocialProviderState.ACTIVE);
     }
 }

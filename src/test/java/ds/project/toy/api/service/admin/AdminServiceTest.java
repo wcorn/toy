@@ -31,8 +31,8 @@ class AdminServiceTest extends IntegrationTestSupport {
         String password = "password";
         String salt = "s1a2d3f4g4";
         String encodedPassword = passwordEncoder.encode(password + salt);
-        UserInfo userInfo = createUserInfo("nickname", "email@gmai.com", UserInfoRole.ROLE_ADMIN,
-            UserInfoState.ACTIVE);
+        UserInfo userInfo = createUserInfo(
+        );
         AdminLogin adminLogin = adminLoginRepository.save(
             createAdminLogin(userInfo, id, encodedPassword, salt));
         AdminLoginServiceDto dto = AdminLoginServiceDto.of(id, password);
@@ -52,8 +52,8 @@ class AdminServiceTest extends IntegrationTestSupport {
         String password = "password";
         String salt = "s1a2d3f4g4";
         String encodedPassword = passwordEncoder.encode(password + salt);
-        UserInfo userInfo = createUserInfo("nickname", "email@gmai.com", UserInfoRole.ROLE_ADMIN,
-            UserInfoState.ACTIVE);
+        UserInfo userInfo = createUserInfo(
+        );
         adminLoginRepository.save(createAdminLogin(userInfo, id, encodedPassword, salt));
         AdminLoginServiceDto dto = AdminLoginServiceDto.of(wrongId, password);
         //when
@@ -72,8 +72,8 @@ class AdminServiceTest extends IntegrationTestSupport {
         String password = "password";
         String salt = "s1a2d3f4g4";
         String encodedPassword = passwordEncoder.encode(password + salt);
-        UserInfo userInfo = createUserInfo("nickname", "email@gmai.com", UserInfoRole.ROLE_ADMIN,
-            UserInfoState.ACTIVE);
+        UserInfo userInfo = createUserInfo(
+        );
         adminLoginRepository.save(createAdminLogin(userInfo, id, encodedPassword, salt));
         AdminLoginServiceDto dto = AdminLoginServiceDto.of(id, wrongPassword);
         //when
@@ -134,9 +134,9 @@ class AdminServiceTest extends IntegrationTestSupport {
         return Category.of(content, state);
     }
 
-    private UserInfo createUserInfo(String nickname, String email,
-        UserInfoRole role, UserInfoState state) {
-        return UserInfo.of(nickname, email, role, state);
+    private UserInfo createUserInfo() {
+        return UserInfo.of("nickname", "email@gmai.com", UserInfoRole.ROLE_ADMIN,
+            UserInfoState.ACTIVE);
     }
 
     private AdminLogin createAdminLogin(UserInfo userInfo, String id, String password,
