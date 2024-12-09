@@ -3,6 +3,7 @@ package ds.project.toy.api.service.product;
 import ds.project.toy.api.controller.product.dto.response.GetProductResponse;
 import ds.project.toy.api.controller.product.dto.response.PostProductResponse;
 import ds.project.toy.api.service.admin.dto.GetProductServiceDto;
+import ds.project.toy.api.service.product.dto.DeleteInterestProductServiceDto;
 import ds.project.toy.api.service.product.dto.PostInterestProductServiceDto;
 import ds.project.toy.api.service.product.dto.PostProductServiceDto;
 import ds.project.toy.domain.product.entity.Category;
@@ -75,6 +76,19 @@ public class ProductServiceImpl implements ProductService {
         UserInfo userInfo = userFindBy(of.getUserId());
         Product product = productFindBy(of.getProductId());
         interestProductRepository.save(InterestProduct.of(product, userInfo));
+    }
+
+    @Transactional
+    @Override
+    public void deleteInterestProduct(DeleteInterestProductServiceDto of) {
+        UserInfo userInfo = userFindBy(of.getUserId());
+        Product product = productFindBy(of.getProductId());
+        interestProductRepository.delete(interestProductFindBy(userInfo, product));
+    }
+
+    private InterestProduct interestProductFindBy(UserInfo userInfo, Product product) {
+        return interestProductRepository.findByUserInfoAndProduct(userInfo, product)
+            .orElseThrow(() -> new CustomException(ResponseCode.NOT_FOUND_INTEREST_PRODUCT));
     }
 
     private boolean isInterest(Product product, UserInfo userInfo) {

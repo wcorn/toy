@@ -5,6 +5,7 @@ import ds.project.toy.api.controller.product.dto.response.GetProductResponse;
 import ds.project.toy.api.controller.product.dto.response.PostProductResponse;
 import ds.project.toy.api.service.admin.dto.GetProductServiceDto;
 import ds.project.toy.api.service.product.ProductService;
+import ds.project.toy.api.service.product.dto.DeleteInterestProductServiceDto;
 import ds.project.toy.api.service.product.dto.PostInterestProductServiceDto;
 import ds.project.toy.global.common.api.CustomResponseCode;
 import ds.project.toy.global.common.exception.CustomException;
@@ -21,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -72,7 +74,15 @@ public class ProductController {
     public ResponseEntity<CustomResponseCode> postInterestProduct(@PathVariable Long productId) {
         Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
         Long userId = Long.parseLong(loggedInUser.getName());
-        productService.postInterestProduct(PostInterestProductServiceDto.of(productId,userId));
+        productService.postInterestProduct(PostInterestProductServiceDto.of(productId, userId));
+        return ResponseEntity.ok(CustomResponseCode.SUCCESS);
+    }
+
+    @DeleteMapping(value = "/{productId}/interest")
+    public ResponseEntity<CustomResponseCode> deleteInterestProduct(@PathVariable Long productId) {
+        Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
+        Long userId = Long.parseLong(loggedInUser.getName());
+        productService.deleteInterestProduct(DeleteInterestProductServiceDto.of(productId, userId));
         return ResponseEntity.ok(CustomResponseCode.SUCCESS);
     }
 }
