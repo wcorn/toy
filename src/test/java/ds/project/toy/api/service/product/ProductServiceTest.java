@@ -10,6 +10,7 @@ import ds.project.toy.IntegrationTestSupport;
 import ds.project.toy.api.controller.product.dto.response.GetProductResponse;
 import ds.project.toy.api.controller.product.dto.response.PostProductResponse;
 import ds.project.toy.api.service.admin.dto.GetProductServiceDto;
+import ds.project.toy.api.service.product.dto.DeleteInterestProductServiceDto;
 import ds.project.toy.api.service.product.dto.PostInterestProductServiceDto;
 import ds.project.toy.api.service.product.dto.PostProductServiceDto;
 import ds.project.toy.domain.product.entity.Category;
@@ -131,6 +132,27 @@ class ProductServiceTest extends IntegrationTestSupport {
             product.getProductId());
         assertThat(interestProducts.get(0).getUserInfo().getUserId()).isEqualTo(
             productViewer.getUserId());
+    }
+
+    @DisplayName(value = "관심 물품을 관심 목록에서 삭제한다.")
+    @Test
+    void deleteInterestProduct() {
+        //given
+        UserInfo productViewer = userInfoRepository.save(createUser());
+        UserInfo productOwner = userInfoRepository.save(createUser());
+        Category category = categoryRepository.save(createCategory("전자기기"));
+        Product product = productRepository.save(createProduct(productOwner, category));
+        DeleteInterestProductServiceDto dto = DeleteInterestProductServiceDto.of(product.getProductId(),
+            productViewer.getUserId());
+        interestProductRepository.save(createInterestProduct(productViewer,product));
+        //when
+        productService.deleteInterestProduct(dto);
+        //then
+        assertThat(interestProductRepository.findAll()).isEmpty();
+    }
+
+    private InterestProduct createInterestProduct(UserInfo productViewer, Product product) {
+        return InterestProduct.of(product, productViewer);
     }
 
     private Product createProduct(UserInfo productOwner, Category category) {
