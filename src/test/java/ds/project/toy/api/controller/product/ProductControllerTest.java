@@ -228,4 +228,22 @@ class ProductControllerTest extends ControllerTestSupport {
         //then
 
     }
+
+    @DisplayName(value = "관심 물품을 관심 목록에서 삭제한다.")
+    @WithMockUser(roles = "USER", username = "1")
+    @Test
+    void deleteInterestProduct() throws Exception {
+        //given
+        Long productId = 1L;
+        //when
+        mockMvc.perform(
+                delete("/product/{productId}/interest", productId)
+                    .with(csrf())
+            ).andExpect(status().isOk())
+            .andExpectAll(
+                jsonPath("$.message").value(CustomResponseCode.SUCCESS.getMessage())
+            );
+        //then
+
+    }
 }
