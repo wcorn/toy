@@ -3,7 +3,6 @@ package ds.project.toy.api.controller.product.dto.response;
 import ds.project.toy.domain.product.entity.Product;
 import ds.project.toy.domain.product.entity.ProductImage;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -54,7 +53,7 @@ public class GetProductResponse {
             .productPrice(product.getPrice())
             .productInterestCount(product.getInterestProducts().size())
             .productView(product.getView())
-            .productImageUrls(product.getProductImages().stream().map(ProductImage::getImageUrl).collect(Collectors.toList()))
+            .productImageUrls(product.getProductImages().stream().map(ProductImage::getImageUrl).toList())
             .productDateTime(product.getUpdatedAt().toString())
             .interested(interested)
             .build();

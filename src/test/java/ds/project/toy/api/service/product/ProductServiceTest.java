@@ -1,5 +1,10 @@
 package ds.project.toy.api.service.product;
 
+import static ds.project.toy.fixture.file.MultipartFileFixture.createImageMockMultipartFile;
+import static ds.project.toy.fixture.product.CategoryFixture.createCategory;
+import static ds.project.toy.fixture.product.InterestProductFixture.createInterestProduct;
+import static ds.project.toy.fixture.product.ProductFixture.createProduct;
+import static ds.project.toy.fixture.user.UserInfoFixture.createUserInfo;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -16,12 +21,9 @@ import ds.project.toy.api.service.product.dto.PostProductServiceDto;
 import ds.project.toy.domain.product.entity.Category;
 import ds.project.toy.domain.product.entity.InterestProduct;
 import ds.project.toy.domain.product.entity.Product;
-import ds.project.toy.domain.product.vo.CategoryState;
 import ds.project.toy.domain.product.vo.ProductState;
 import ds.project.toy.domain.product.vo.SellingStatus;
 import ds.project.toy.domain.user.entity.UserInfo;
-import ds.project.toy.domain.user.vo.UserInfoRole;
-import ds.project.toy.domain.user.vo.UserInfoState;
 import ds.project.toy.global.common.vo.RedisPrefix;
 import java.util.List;
 import java.util.Optional;
@@ -37,16 +39,12 @@ class ProductServiceTest extends IntegrationTestSupport {
     @Test
     void postProduct() {
         //given
-        UserInfo userInfo = userInfoRepository.save(createUser());
-        Category category = categoryRepository.save(createCategory("전자기가"));
-        String title = "title";
-        String content = "content";
-        Long price = 10000L;
-        MockMultipartFile image = new MockMultipartFile("image", "test2.jpeg",
-            MediaType.IMAGE_JPEG_VALUE, "test".getBytes());
+        UserInfo userInfo = userInfoRepository.save(createUserInfo());
+        Category category = categoryRepository.save(createCategory());
+        MockMultipartFile image = createImageMockMultipartFile("image");
         List<MultipartFile> files = List.of(image);
-        PostProductServiceDto dto = PostProductServiceDto.of(userInfo.getUserId(), title, content,
-            price, category.getCategoryId(), files);
+        PostProductServiceDto dto = PostProductServiceDto.of(userInfo.getUserId(), "title",
+            "content", 10000L, category.getCategoryId(), files);
         //when
         PostProductResponse response = productService.postProduct(dto);
         //then
@@ -63,9 +61,9 @@ class ProductServiceTest extends IntegrationTestSupport {
     @Test
     void getProduct() {
         //given
-        UserInfo productOwner = userInfoRepository.save(createUser());
-        UserInfo productViewer = userInfoRepository.save(createUser());
-        Category category = categoryRepository.save(createCategory("전자기기"));
+        UserInfo productOwner = userInfoRepository.save(createUserInfo());
+        UserInfo productViewer = userInfoRepository.save(createUserInfo());
+        Category category = categoryRepository.save(createCategory());
         Product product = productRepository.save(createProduct(productOwner, category));
         GetProductServiceDto dto = GetProductServiceDto.of(product.getProductId(),
             productViewer.getUserId());
@@ -82,8 +80,8 @@ class ProductServiceTest extends IntegrationTestSupport {
     @Test
     void getProductWithViewerIsProductOwner() {
         //given
-        UserInfo productOwner = userInfoRepository.save(createUser());
-        Category category = categoryRepository.save(createCategory("전자기기"));
+        UserInfo productOwner = userInfoRepository.save(createUserInfo());
+        Category category = categoryRepository.save(createCategory());
         Product product = productRepository.save(createProduct(productOwner, category));
         GetProductServiceDto dto = GetProductServiceDto.of(product.getProductId(),
             productOwner.getUserId());
@@ -99,9 +97,9 @@ class ProductServiceTest extends IntegrationTestSupport {
     @Test
     void getProductAlreadyViewed() {
         //given
-        UserInfo productOwner = userInfoRepository.save(createUser());
-        UserInfo productViewer = userInfoRepository.save(createUser());
-        Category category = categoryRepository.save(createCategory("전자기기"));
+        UserInfo productOwner = userInfoRepository.save(createUserInfo());
+        UserInfo productViewer = userInfoRepository.save(createUserInfo());
+        Category category = categoryRepository.save(createCategory());
         Product product = productRepository.save(createProduct(productOwner, category));
         GetProductServiceDto dto = GetProductServiceDto.of(product.getProductId(),
             productViewer.getUserId());
@@ -117,9 +115,9 @@ class ProductServiceTest extends IntegrationTestSupport {
     @Test
     void postInterestProduct() {
         //given
-        UserInfo productViewer = userInfoRepository.save(createUser());
-        UserInfo productOwner = userInfoRepository.save(createUser());
-        Category category = categoryRepository.save(createCategory("전자기기"));
+        UserInfo productViewer = userInfoRepository.save(createUserInfo());
+        UserInfo productOwner = userInfoRepository.save(createUserInfo());
+        Category category = categoryRepository.save(createCategory());
         Product product = productRepository.save(createProduct(productOwner, category));
         PostInterestProductServiceDto dto = PostInterestProductServiceDto.of(product.getProductId(),
             productViewer.getUserId());
@@ -138,34 +136,17 @@ class ProductServiceTest extends IntegrationTestSupport {
     @Test
     void deleteInterestProduct() {
         //given
-        UserInfo productViewer = userInfoRepository.save(createUser());
-        UserInfo productOwner = userInfoRepository.save(createUser());
-        Category category = categoryRepository.save(createCategory("전자기기"));
+        UserInfo productViewer = userInfoRepository.save(createUserInfo());
+        UserInfo productOwner = userInfoRepository.save(createUserInfo());
+        Category category = categoryRepository.save(createCategory());
         Product product = productRepository.save(createProduct(productOwner, category));
-        DeleteInterestProductServiceDto dto = DeleteInterestProductServiceDto.of(product.getProductId(),
-            productViewer.getUserId());
-        interestProductRepository.save(createInterestProduct(productViewer,product));
+        DeleteInterestProductServiceDto dto = DeleteInterestProductServiceDto.of(
+            product.getProductId(), productViewer.getUserId());
+        interestProductRepository.save(createInterestProduct(productViewer, product));
         //when
         productService.deleteInterestProduct(dto);
         //then
         assertThat(interestProductRepository.findAll()).isEmpty();
     }
 
-    private InterestProduct createInterestProduct(UserInfo productViewer, Product product) {
-        return InterestProduct.of(product, productViewer);
-    }
-
-    private Product createProduct(UserInfo productOwner, Category category) {
-        return Product.of(category, productOwner, "제목", "내용", 10000L,
-            0L, SellingStatus.SELL, ProductState.ACTIVE);
-    }
-
-    private Category createCategory(String content) {
-        return Category.of(content, CategoryState.ACTIVE);
-    }
-
-    private UserInfo createUser() {
-        return UserInfo.of("nickname", "email@gmail.com",
-            UserInfoRole.ROLE_USER, UserInfoState.ACTIVE);
-    }
 }

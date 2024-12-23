@@ -1,17 +1,18 @@
 package ds.project.toy.domain.product.repository;
 
+import static ds.project.toy.fixture.product.CategoryFixture.createCategory;
+import static ds.project.toy.fixture.product.InterestProductFixture.createInterestProduct;
+import static ds.project.toy.fixture.product.ProductFixture.createProduct;
+import static ds.project.toy.fixture.user.UserInfoFixture.createUserInfo;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import ds.project.toy.IntegrationTestSupport;
 import ds.project.toy.domain.product.entity.Category;
 import ds.project.toy.domain.product.entity.InterestProduct;
 import ds.project.toy.domain.product.entity.Product;
-import ds.project.toy.domain.product.vo.CategoryState;
 import ds.project.toy.domain.product.vo.ProductState;
 import ds.project.toy.domain.product.vo.SellingStatus;
 import ds.project.toy.domain.user.entity.UserInfo;
-import ds.project.toy.domain.user.vo.UserInfoRole;
-import ds.project.toy.domain.user.vo.UserInfoState;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -21,32 +22,14 @@ class InterestProductRepositoryTest extends IntegrationTestSupport {
     @Test
     void existsByUserInfoAndProduct() {
         //given
-        UserInfo userInfo = userInfoRepository.save(createUser());
+        UserInfo userInfo = userInfoRepository.save(createUserInfo());
         Category category = categoryRepository.save(createCategory());
         Product product = productRepository.save(createProduct(userInfo, category));
-        interestProductRepository.save(
-            createInterestProduct(userInfo, product));
+        interestProductRepository.save(createInterestProduct(userInfo, product));
         //when
         boolean exists = interestProductRepository.existsByUserInfoAndProduct(userInfo, product);
         //then
         assertThat(exists).isTrue();
     }
 
-    private InterestProduct createInterestProduct(UserInfo userInfo, Product product) {
-        return InterestProduct.of(product, userInfo);
-    }
-
-    private Product createProduct(UserInfo productOwner, Category category) {
-        return Product.of(category, productOwner, "제목", "내용", 10000L,
-            0L, SellingStatus.SELL, ProductState.ACTIVE);
-    }
-
-    private Category createCategory() {
-        return Category.of("전자기기", CategoryState.ACTIVE);
-    }
-
-    private UserInfo createUser() {
-        return UserInfo.of("nickname", "email@gmail.com",
-            UserInfoRole.ROLE_USER, UserInfoState.ACTIVE);
-    }
 }

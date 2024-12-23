@@ -1,5 +1,6 @@
 package ds.project.toy.domain.product.entity;
 
+import static ds.project.toy.fixture.product.CategoryFixture.createCategory;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import ds.project.toy.IntegrationTestSupport;
@@ -20,7 +21,4 @@ class CategoryTest extends IntegrationTestSupport {
         assertThat(category.getCategoryState()).isEqualTo(CategoryState.INACTIVE);
     }
 
-    private Category createCategory() {
-        return Category.of("전자기기", CategoryState.ACTIVE);
-    }
 }

@@ -1,5 +1,6 @@
 package ds.project.toy.global.util;
 
+import static ds.project.toy.fixture.file.MultipartFileFixture.createImageMockMultipartFile;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import ds.project.toy.IntegrationTestSupport;
@@ -14,8 +15,8 @@ class FileUtilTest extends IntegrationTestSupport {
     @Test
     void isImageFileWithJPG() {
         //given
-        MockMultipartFile mockMultipartFile = new MockMultipartFile("image", "test.jpg",
-            MediaType.IMAGE_JPEG_VALUE, "hello.jpg".getBytes());
+        MockMultipartFile mockMultipartFile = createImageMockMultipartFile("image", "image.jpeg",
+            MediaType.IMAGE_JPEG_VALUE, "image.jpeg".getBytes());
         //when
         boolean result = fileUtil.isImageFile(mockMultipartFile);
         //then
@@ -26,8 +27,8 @@ class FileUtilTest extends IntegrationTestSupport {
     @Test
     void isImageFileWithPNG() {
         //given
-        MockMultipartFile mockMultipartFile = new MockMultipartFile("image", "test.png",
-            MediaType.IMAGE_PNG_VALUE, "hello.jpg".getBytes());
+        MockMultipartFile mockMultipartFile = createImageMockMultipartFile("image", "image.png",
+            MediaType.IMAGE_PNG_VALUE, "image.png".getBytes());
         //when
         boolean result = fileUtil.isImageFile(mockMultipartFile);
         //then
@@ -38,8 +39,7 @@ class FileUtilTest extends IntegrationTestSupport {
     @Test
     void isImageFileWithoutExtension() {
         //given
-        MockMultipartFile mockMultipartFile = new MockMultipartFile("image", "test",
-            MediaType.IMAGE_PNG_VALUE, "hello".getBytes());
+        MockMultipartFile mockMultipartFile = createImageMockMultipartFile("image", "image");
         //when
         boolean result = fileUtil.isImageFile(mockMultipartFile);
         //then
@@ -50,19 +50,20 @@ class FileUtilTest extends IntegrationTestSupport {
     @Test
     void isImageFileWithoutContentType() {
         //given
-        MockMultipartFile mockMultipartFile = new MockMultipartFile("image", "test.png",
-            null, "test.png".getBytes());
+        MockMultipartFile mockMultipartFile = createImageMockMultipartFile("image", "image.png",
+            null, "image.png".getBytes());
         //when
         boolean result = fileUtil.isImageFile(mockMultipartFile);
         //then
         assertThat(result).isFalse();
     }
+
     @DisplayName(value = "파일의 content type이 허용된 type이 아닐 경우 false를 반환한다.")
     @Test
     void isImageFileWithOtherContentType() {
         //given
-        MockMultipartFile mockMultipartFile = new MockMultipartFile("image", "test.png",
-            MediaType.TEXT_PLAIN_VALUE, "test.png".getBytes());
+        MockMultipartFile mockMultipartFile = createImageMockMultipartFile("image",
+            MediaType.APPLICATION_JSON);
         //when
         boolean result = fileUtil.isImageFile(mockMultipartFile);
         //then

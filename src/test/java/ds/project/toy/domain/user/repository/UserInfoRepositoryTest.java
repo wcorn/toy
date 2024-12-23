@@ -1,10 +1,10 @@
 package ds.project.toy.domain.user.repository;
 
+import static ds.project.toy.fixture.user.UserInfoFixture.createUserInfo;
 import static org.junit.jupiter.api.Assertions.*;
 
 import ds.project.toy.IntegrationTestSupport;
 import ds.project.toy.domain.user.entity.UserInfo;
-import ds.project.toy.domain.user.vo.UserInfoRole;
 import ds.project.toy.domain.user.vo.UserInfoState;
 import java.util.List;
 import java.util.Optional;
@@ -17,22 +17,19 @@ class UserInfoRepositoryTest extends IntegrationTestSupport {
     @Test
     void findByUserIdAndState() {
         //given
-        UserInfo userInfo1 = createUserInfo("nickname1", "email1@gmail.com",
-            UserInfoState.ACTIVE);
-        UserInfo userInfo2 = createUserInfo("nickname2", "email2@gmail.com",
-            UserInfoState.BAN);
-        UserInfo userInfo3 = createUserInfo("nickname3", "email3@gmail.com",
-            UserInfoState.WITHDRAWN);
-        userInfoRepository.saveAll(List.of(userInfo1, userInfo2, userInfo3));
+        UserInfo activeUserInfo = createUserInfo("nickname1", UserInfoState.ACTIVE);
+        UserInfo banUserInfo = createUserInfo("nickname2", UserInfoState.BAN);
+        UserInfo inActiveUserInfo = createUserInfo("nickname3", UserInfoState.WITHDRAWN);
+        userInfoRepository.saveAll(List.of(activeUserInfo, banUserInfo, inActiveUserInfo));
 
         //when
         Optional<UserInfo> savedUserInfo = userInfoRepository.findByUserIdAndState(
-            userInfo1.getUserId(), userInfo1.getState());
+            activeUserInfo.getUserId(), activeUserInfo.getState());
 
         //then
         assertTrue(savedUserInfo.isPresent());
-        assertEquals(userInfo1.getUserId(), savedUserInfo.get().getUserId());
-        assertEquals(userInfo1.getState(), savedUserInfo.get().getState());
+        assertEquals(activeUserInfo.getUserId(), savedUserInfo.get().getUserId());
+        assertEquals(activeUserInfo.getState(), savedUserInfo.get().getState());
 
     }
 
@@ -41,21 +38,14 @@ class UserInfoRepositoryTest extends IntegrationTestSupport {
     void existsByNicknameAndState() {
         //given
         String nickname = "nickname1";
-        UserInfo userInfo1 = createUserInfo(nickname, "email1@gmail.com",
-            UserInfoState.ACTIVE);
-        UserInfo userInfo2 = createUserInfo("nickname2", "email2@gmail.com",
-            UserInfoState.BAN);
-        UserInfo userInfo3 = createUserInfo("nickname3", "email3@gmail.com",
-            UserInfoState.WITHDRAWN);
+        UserInfo userInfo1 = createUserInfo(nickname, UserInfoState.ACTIVE);
+        UserInfo userInfo2 = createUserInfo("nickname2", UserInfoState.BAN);
+        UserInfo userInfo3 = createUserInfo("nickname3", UserInfoState.WITHDRAWN);
         userInfoRepository.saveAll(List.of(userInfo1, userInfo2, userInfo3));
         //when
-        boolean exists = userInfoRepository.existsByNicknameAndState(nickname, UserInfoState.ACTIVE);
+        boolean exists = userInfoRepository.existsByNicknameAndState(nickname,
+            UserInfoState.ACTIVE);
         //then
         assertTrue(exists);
-    }
-
-    private UserInfo createUserInfo(String nickname, String email,
-        UserInfoState state) {
-        return UserInfo.of(nickname, email, "image.jpg", UserInfoRole.ROLE_USER, state);
     }
 }

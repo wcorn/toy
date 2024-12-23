@@ -1,5 +1,6 @@
 package ds.project.toy.api.controller.auth;
 
+import static ds.project.toy.fixture.auth.AuthTokenFixture.createAuthToken;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -14,14 +15,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
-class AuthControllerTest extends ControllerTestSupport {
+class  AuthControllerTest extends ControllerTestSupport {
 
     @DisplayName(value = "토큰을 재발급한다.")
     @Test
     void reissuedToken() throws Exception {
         //given
         ReissuedTokenRequest request = ReissuedTokenRequest.of("accessToken", "refreshToken");
-        AuthToken authToken = AuthToken.of("accessToken2", "refreshToken2");
+        AuthToken authToken = createAuthToken();
 
         given(authService.reissuedToken(any())).willReturn(
             AuthToken.of(authToken.getAccessToken(), authToken.getRefreshToken()));

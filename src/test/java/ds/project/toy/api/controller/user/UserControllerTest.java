@@ -1,5 +1,6 @@
 package ds.project.toy.api.controller.user;
 
+import static ds.project.toy.fixture.file.MultipartFileFixture.createImageMockMultipartFile;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -43,8 +44,7 @@ class UserControllerTest extends ControllerTestSupport {
     @WithMockUser(roles = "USER", username = "1")
     void changeProfileImage() throws Exception {
         //given
-        MockMultipartFile image = new MockMultipartFile("image", "test.jpeg",
-            MediaType.IMAGE_JPEG_VALUE, "test".getBytes());
+        MockMultipartFile image = createImageMockMultipartFile("image");
         given(fileUtil.isImageFile(any())).willReturn(true);
         //when
         mockMvc.perform(
@@ -62,8 +62,7 @@ class UserControllerTest extends ControllerTestSupport {
     @WithMockUser(roles = "USER", username = "1")
     void changeProfileImageWithInvalidImage() throws Exception {
         //given
-        MockMultipartFile image = new MockMultipartFile("image", "test.jpeg",
-            null, "test".getBytes());
+        MockMultipartFile image = createImageMockMultipartFile("image");
         given(fileUtil.isImageFile(any())).willReturn(false);
         //when
         mockMvc.perform(

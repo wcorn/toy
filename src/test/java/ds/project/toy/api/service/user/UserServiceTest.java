@@ -1,5 +1,9 @@
 package ds.project.toy.api.service.user;
 
+import static ds.project.toy.fixture.file.MultipartFileFixture.createImageMockMultipartFile;
+import static ds.project.toy.fixture.user.SocialLoginFixture.createSocialLogin;
+import static ds.project.toy.fixture.user.SocialProviderFixture.createSocialProvider;
+import static ds.project.toy.fixture.user.UserInfoFixture.createUserInfo;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -14,15 +18,10 @@ import ds.project.toy.api.controller.user.dto.response.GetUserProfileResponse;
 import ds.project.toy.api.service.user.dto.ChangeNicknameServiceDto;
 import ds.project.toy.api.service.user.dto.ChangeProfileImageDto;
 import ds.project.toy.api.service.user.dto.GetUserProfileDto;
-import ds.project.toy.domain.user.entity.SocialLogin;
 import ds.project.toy.domain.user.entity.SocialProvider;
 import ds.project.toy.domain.user.entity.UserInfo;
-import ds.project.toy.domain.user.vo.SocialProviderState;
-import ds.project.toy.domain.user.vo.UserInfoRole;
-import ds.project.toy.domain.user.vo.UserInfoState;
 import ds.project.toy.global.common.exception.CustomException;
 import ds.project.toy.global.common.exception.ResponseCode;
-import ds.project.toy.global.common.vo.OAuth2Provider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -36,11 +35,9 @@ class UserServiceTest extends IntegrationTestSupport {
         //given
         String prevNickname = "prev";
         String nextNickname = "nickname";
-        SocialProvider socialProvider = socialProviderRepository.save(
-            createSocialProvider());
-        UserInfo userInfo = createUserInfo(prevNickname
-        );
-        socialLoginRepository.save(createSocialLogin(socialProvider, "id", userInfo));
+        SocialProvider socialProvider = socialProviderRepository.save(createSocialProvider());
+        UserInfo userInfo = createUserInfo(prevNickname);
+        socialLoginRepository.save(createSocialLogin(socialProvider, userInfo));
 
         ChangeNicknameServiceDto dto = ChangeNicknameServiceDto.of(
             nextNickname, userInfo.getUserId());
@@ -57,12 +54,9 @@ class UserServiceTest extends IntegrationTestSupport {
     void changeNicknameWithNicknameAlreadyInUse() {
         //given
         String nickname = "nickname";
-        SocialProvider socialProvider = socialProviderRepository.save(
-            createSocialProvider());
-        UserInfo userInfo = createUserInfo(nickname
-        );
-        socialLoginRepository.save(createSocialLogin(socialProvider, "id", userInfo));
-
+        SocialProvider socialProvider = socialProviderRepository.save(createSocialProvider());
+        UserInfo userInfo = createUserInfo(nickname);
+        socialLoginRepository.save(createSocialLogin(socialProvider, userInfo));
         ChangeNicknameServiceDto dto = ChangeNicknameServiceDto.of(nickname, userInfo.getUserId());
 
         //when then
@@ -78,14 +72,11 @@ class UserServiceTest extends IntegrationTestSupport {
         //given
         String prevNickname = "prev";
         String duplicateNickname = "nickname";
-        SocialProvider socialProvider = socialProviderRepository.save(
-            createSocialProvider());
-        UserInfo userInfo = createUserInfo(prevNickname
-        );
-        socialLoginRepository.save(createSocialLogin(socialProvider, "id1", userInfo));
-        UserInfo userInfo2 = createUserInfo(duplicateNickname
-        );
-        socialLoginRepository.save(createSocialLogin(socialProvider, "id2", userInfo2));
+        SocialProvider socialProvider = socialProviderRepository.save(createSocialProvider());
+        UserInfo userInfo = createUserInfo(prevNickname);
+        socialLoginRepository.save(createSocialLogin(socialProvider, userInfo));
+        UserInfo userInfo2 = createUserInfo(duplicateNickname);
+        socialLoginRepository.save(createSocialLogin(socialProvider, userInfo2));
 
         ChangeNicknameServiceDto dto = ChangeNicknameServiceDto.of(duplicateNickname,
             userInfo.getUserId());
@@ -101,12 +92,9 @@ class UserServiceTest extends IntegrationTestSupport {
     @Test
     void changeProfileImage() {
         //given
-        MockMultipartFile mockMultipartFile = new MockMultipartFile("image", "test.jpeg",
-            MediaType.IMAGE_JPEG_VALUE, "test".getBytes());
-        UserInfo userInfo = userInfoRepository.save(createUserInfo("nickname"
-        ));
-        ChangeProfileImageDto dto = ChangeProfileImageDto.of(
-            userInfo.getUserId(), mockMultipartFile);
+        MockMultipartFile image = createImageMockMultipartFile("image");
+        UserInfo userInfo = userInfoRepository.save(createUserInfo("nickname"));
+        ChangeProfileImageDto dto = ChangeProfileImageDto.of(userInfo.getUserId(), image);
         String imageUrl = "image.url";
         given(minioUtil.uploadFile(any())).willReturn(imageUrl);
 
@@ -122,12 +110,10 @@ class UserServiceTest extends IntegrationTestSupport {
     @Test
     void changeProfileImageWithExistsProfileImage() {
         //given
-        MockMultipartFile mockMultipartFile = new MockMultipartFile("image", "test.jpeg",
-            MediaType.IMAGE_JPEG_VALUE, "test".getBytes());
-        UserInfo userInfo = userInfoRepository.save(createUserInfo("nickname", "email", "image.jpg"
-        ));
-        ChangeProfileImageDto dto = ChangeProfileImageDto.of(
-            userInfo.getUserId(), mockMultipartFile);
+        MockMultipartFile image = createImageMockMultipartFile("image");
+        UserInfo userInfo = userInfoRepository.save(
+            createUserInfo());
+        ChangeProfileImageDto dto = ChangeProfileImageDto.of(userInfo.getUserId(), image);
         String imageUrl = "changeImage.jpg";
         given(minioUtil.uploadFile(any())).willReturn(imageUrl);
 
@@ -147,8 +133,7 @@ class UserServiceTest extends IntegrationTestSupport {
         String nickname = "nickname";
         String email = "email@email.com";
         String profileImage = "profileImage.jpg";
-        UserInfo userInfo = userInfoRepository.save(createUserInfo(nickname, email, profileImage
-        ));
+        UserInfo userInfo = userInfoRepository.save(createUserInfo(nickname, email, profileImage));
         GetUserProfileDto dto = GetUserProfileDto.of(userInfo.getUserId());
 
         //when
@@ -160,19 +145,4 @@ class UserServiceTest extends IntegrationTestSupport {
             .containsExactly(nickname, email, profileImage);
     }
 
-    private UserInfo createUserInfo(String nickname) {
-        return UserInfo.of(nickname, "email", UserInfoRole.ROLE_USER, UserInfoState.ACTIVE);
-    }
-
-    private UserInfo createUserInfo(String nickname, String email, String image) {
-        return UserInfo.of(nickname, email, image, UserInfoRole.ROLE_USER, UserInfoState.ACTIVE);
-    }
-
-    private SocialLogin createSocialLogin(SocialProvider provider, String id, UserInfo userInfo) {
-        return SocialLogin.of(provider, id, userInfo);
-    }
-
-    private SocialProvider createSocialProvider() {
-        return SocialProvider.of(OAuth2Provider.KAKAO, SocialProviderState.ACTIVE);
-    }
 }

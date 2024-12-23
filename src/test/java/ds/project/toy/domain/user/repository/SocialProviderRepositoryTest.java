@@ -1,5 +1,6 @@
 package ds.project.toy.domain.user.repository;
 
+import static ds.project.toy.fixture.user.SocialProviderFixture.createSocialProvider;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import ds.project.toy.IntegrationTestSupport;
@@ -27,8 +28,4 @@ class SocialProviderRepositoryTest extends IntegrationTestSupport {
         assertThat(socialProvider.get().getProvider()).isEqualTo(provider);
     }
 
-    private SocialProvider createSocialProvider(OAuth2Provider provider,
-        SocialProviderState state) {
-        return SocialProvider.of(provider, state);
-    }
 }
