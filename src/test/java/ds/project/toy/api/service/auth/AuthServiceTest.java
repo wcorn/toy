@@ -1,5 +1,6 @@
 package ds.project.toy.api.service.auth;
 
+import static ds.project.toy.fixture.user.UserInfoFixture.createUserInfo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
@@ -7,8 +8,6 @@ import static org.mockito.BDDMockito.given;
 import ds.project.toy.IntegrationTestSupport;
 import ds.project.toy.api.service.auth.dto.ReissuedTokenServiceDto;
 import ds.project.toy.domain.user.entity.UserInfo;
-import ds.project.toy.domain.user.vo.UserInfoRole;
-import ds.project.toy.domain.user.vo.UserInfoState;
 import ds.project.toy.global.common.exception.CustomException;
 import ds.project.toy.global.common.exception.ResponseCode;
 import ds.project.toy.global.common.vo.AuthToken;
@@ -21,9 +20,8 @@ class AuthServiceTest extends IntegrationTestSupport {
     @Test
     void reissuedToken() {
         //given
-        UserInfo userInfo = userInfoRepository.save(
-            createUserInfo());
-        AuthToken authToken = createToken(userInfo.getUserId());
+        UserInfo userInfo = userInfoRepository.save(createUserInfo());
+        AuthToken authToken = generateToken(userInfo.getUserId());
         ReissuedTokenServiceDto dto = ReissuedTokenServiceDto.of(authToken.getAccessToken(),
             authToken.getRefreshToken());
         given(redisUtil.hasKey(any(), any())).willReturn(true);
@@ -40,7 +38,7 @@ class AuthServiceTest extends IntegrationTestSupport {
     @Test
     void reissuedTokenWithRedisNotStoredToken() {
         //given
-        AuthToken authToken = createToken(1);
+        AuthToken authToken = generateToken(1);
         ReissuedTokenServiceDto dto = ReissuedTokenServiceDto.of(authToken.getAccessToken(),
             authToken.getRefreshToken());
         given(redisUtil.hasKey(any(), any())).willReturn(false);
@@ -53,12 +51,8 @@ class AuthServiceTest extends IntegrationTestSupport {
 
     }
 
-    private AuthToken createToken(long id) {
+    private AuthToken generateToken(long id) {
         return jwtTokenProvider.createTokenAndStore(String.valueOf(id));
     }
 
-    private UserInfo createUserInfo() {
-        return UserInfo.of("nickname", "email", "image.jpg",
-            UserInfoRole.ROLE_USER, UserInfoState.ACTIVE);
-    }
 }

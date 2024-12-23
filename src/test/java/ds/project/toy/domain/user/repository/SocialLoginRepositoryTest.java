@@ -1,5 +1,8 @@
 package ds.project.toy.domain.user.repository;
 
+import static ds.project.toy.fixture.user.SocialLoginFixture.createSocialLogin;
+import static ds.project.toy.fixture.user.SocialProviderFixture.createSocialProvider;
+import static ds.project.toy.fixture.user.UserInfoFixture.createUserInfo;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import ds.project.toy.IntegrationTestSupport;
@@ -24,8 +27,7 @@ class SocialLoginRepositoryTest extends IntegrationTestSupport {
         String socialId = "SocialId";
         SocialProvider socialProvider = socialProviderRepository.save(
             createSocialProvider(provider));
-        UserInfo userInfo = createUserInfo(
-        );
+        UserInfo userInfo = createUserInfo();
         socialLoginRepository.save(createSocialLogin(socialProvider, socialId, userInfo));
         //when
         Optional<SocialLogin> socialLogin = socialLoginRepository.findByProviderProviderAndSocialId(
@@ -36,15 +38,4 @@ class SocialLoginRepositoryTest extends IntegrationTestSupport {
         assertThat(socialLogin.get().getSocialId()).isEqualTo(socialId);
     }
 
-    private UserInfo createUserInfo() {
-        return UserInfo.of("nickname", "email","image.jpg", UserInfoRole.ROLE_USER, UserInfoState.ACTIVE);
-    }
-
-    private SocialLogin createSocialLogin(SocialProvider provider, String id, UserInfo userInfo) {
-        return SocialLogin.of(provider, id, userInfo);
-    }
-
-    private SocialProvider createSocialProvider(OAuth2Provider provider) {
-        return SocialProvider.of(provider, SocialProviderState.ACTIVE);
-    }
 }

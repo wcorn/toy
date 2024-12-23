@@ -1,5 +1,6 @@
 package ds.project.toy.api.controller.admin;
 
+import static ds.project.toy.fixture.auth.AuthTokenFixture.createAuthToken;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -16,6 +17,7 @@ import ds.project.toy.api.controller.admin.dto.request.PostCategoryRequest;
 import ds.project.toy.api.controller.admin.dto.response.GetCategoryResponse;
 import ds.project.toy.api.controller.admin.dto.response.PostCategoryResponse;
 import ds.project.toy.domain.product.vo.CategoryState;
+import ds.project.toy.fixture.auth.AuthTokenFixture;
 import ds.project.toy.global.common.api.CustomResponseCode;
 import ds.project.toy.global.common.vo.AuthToken;
 import java.util.Collections;
@@ -32,7 +34,7 @@ class AdminControllerTest extends ControllerTestSupport {
         String id = "id";
         String password = "password";
         AdminLoginRequest request = AdminLoginRequest.of(id, password);
-        AuthToken authToken = AuthToken.of("accessToken2", "refreshToken2");
+        AuthToken authToken = createAuthToken();
         given(adminService.adminLogin(any()))
             .willReturn(authToken);
         //when then
