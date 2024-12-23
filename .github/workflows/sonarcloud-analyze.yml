@@ -34,7 +34,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          args: |
+          args: >
             -Dsonar.projectKey=wcorn_toy
             -Dsonar.organization=wcorn-sonar-cloud
             -Dsonar.host.url=https://sonarcloud.io
