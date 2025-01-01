@@ -6,12 +6,14 @@ import static ds.project.toy.fixture.product.InterestProductFixture.createIntere
 import static ds.project.toy.fixture.product.ProductFixture.createProduct;
 import static ds.project.toy.fixture.user.UserInfoFixture.createUserInfo;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import ds.project.toy.IntegrationTestSupport;
+import ds.project.toy.api.controller.product.dto.response.GetCategoryResponse;
 import ds.project.toy.api.controller.product.dto.response.GetProductResponse;
 import ds.project.toy.api.controller.product.dto.response.PostProductResponse;
 import ds.project.toy.api.service.admin.dto.GetProductServiceDto;
@@ -21,6 +23,7 @@ import ds.project.toy.api.service.product.dto.PostProductServiceDto;
 import ds.project.toy.domain.product.entity.Category;
 import ds.project.toy.domain.product.entity.InterestProduct;
 import ds.project.toy.domain.product.entity.Product;
+import ds.project.toy.domain.product.vo.CategoryState;
 import ds.project.toy.domain.product.vo.ProductState;
 import ds.project.toy.domain.product.vo.SellingStatus;
 import ds.project.toy.domain.user.entity.UserInfo;
@@ -29,7 +32,6 @@ import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -149,4 +151,20 @@ class ProductServiceTest extends IntegrationTestSupport {
         assertThat(interestProductRepository.findAll()).isEmpty();
     }
 
+    @DisplayName(value = "제품 카테고리 목록을 조회한다.")
+    @Test
+    void getCategoyList() {
+        //given
+        Category category1 = categoryRepository.save(createCategory("전자기기", CategoryState.ACTIVE));
+        Category category2 = categoryRepository.save(createCategory("건전지", CategoryState.INACTIVE));
+        categoryRepository.saveAll(List.of(category1, category2));
+        //when
+        List<GetCategoryResponse> getCategoryResponseList = productService.getCategoryList();
+        //then
+        assertThat(getCategoryResponseList).hasSize(1)
+            .extracting("categoryId", "categoryName")
+            .contains(
+                tuple(category1.getCategoryId(), category1.getContent())
+            );
+    }
 }

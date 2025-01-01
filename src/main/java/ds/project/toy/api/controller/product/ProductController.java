@@ -1,6 +1,7 @@
 package ds.project.toy.api.controller.product;
 
 import ds.project.toy.api.controller.product.dto.request.PostProductRequest;
+import ds.project.toy.api.controller.product.dto.response.GetCategoryResponse;
 import ds.project.toy.api.controller.product.dto.response.GetProductResponse;
 import ds.project.toy.api.controller.product.dto.response.PostProductResponse;
 import ds.project.toy.api.service.admin.dto.GetProductServiceDto;
@@ -84,5 +85,11 @@ public class ProductController {
         Long userId = Long.parseLong(loggedInUser.getName());
         productService.deleteInterestProduct(DeleteInterestProductServiceDto.of(productId, userId));
         return ResponseEntity.ok(CustomResponseCode.SUCCESS);
+    }
+
+    @GetMapping(value = "/category")
+    public ResponseEntity<List<GetCategoryResponse>> getCategoryList() {
+        List<GetCategoryResponse> response = productService.getCategoryList();
+        return ResponseEntity.ok(response);
     }
 }

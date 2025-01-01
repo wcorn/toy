@@ -1,5 +1,6 @@
 package ds.project.toy.api.service.product;
 
+import ds.project.toy.api.controller.product.dto.response.GetCategoryResponse;
 import ds.project.toy.api.controller.product.dto.response.GetProductResponse;
 import ds.project.toy.api.controller.product.dto.response.PostProductResponse;
 import ds.project.toy.api.service.admin.dto.GetProductServiceDto;
@@ -14,6 +15,7 @@ import ds.project.toy.domain.product.repository.CategoryRepository;
 import ds.project.toy.domain.product.repository.InterestProductRepository;
 import ds.project.toy.domain.product.repository.ProductImageRepository;
 import ds.project.toy.domain.product.repository.ProductRepository;
+import ds.project.toy.domain.product.vo.CategoryState;
 import ds.project.toy.domain.user.entity.UserInfo;
 import ds.project.toy.domain.user.repository.UserInfoRepository;
 import ds.project.toy.domain.user.vo.UserInfoState;
@@ -84,6 +86,18 @@ public class ProductServiceImpl implements ProductService {
         UserInfo userInfo = userFindBy(of.getUserId());
         Product product = productFindBy(of.getProductId());
         interestProductRepository.delete(interestProductFindBy(userInfo, product));
+    }
+
+    @Override
+    public List<GetCategoryResponse> getCategoryList() {
+        List<Category> categoryList = categoryFindAll(CategoryState.ACTIVE);
+        return categoryList.stream().map(
+            GetCategoryResponse::fromCategory
+        ).toList();
+    }
+
+    private List<Category> categoryFindAll(CategoryState categoryState) {
+        return categoryRepository.findAllByCategoryState(categoryState);
     }
 
     private InterestProduct interestProductFindBy(UserInfo userInfo, Product product) {
