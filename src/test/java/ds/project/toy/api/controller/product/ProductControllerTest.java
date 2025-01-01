@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import ds.project.toy.ControllerTestSupport;
 import ds.project.toy.api.controller.product.dto.request.PostProductRequest;
+import ds.project.toy.api.controller.product.dto.response.GetCategoryResponse;
 import ds.project.toy.api.controller.product.dto.response.GetProductResponse;
 import ds.project.toy.api.controller.product.dto.response.PostProductResponse;
 import ds.project.toy.global.common.api.CustomResponseCode;
@@ -209,6 +210,27 @@ class ProductControllerTest extends ControllerTestSupport {
             ).andExpect(status().isOk())
             .andExpectAll(
                 jsonPath("$.message").value(CustomResponseCode.SUCCESS.getMessage())
+            );
+        //then
+
+    }
+    @DisplayName(value = "제품 카테고리 목록을 조회한다.")
+    @WithMockUser(roles = "USER", username = "1")
+    @Test
+    void getCategoryList() throws Exception {
+        //given
+        Long categoryId = 1L;
+        String categoryName = "전자기기";
+        given(productService.getCategoryList()).willReturn(Collections.singletonList(
+            GetCategoryResponse.of(categoryId, categoryName)));
+        //when
+        mockMvc.perform(
+                get("/product/category")
+                    .with(csrf())
+            ).andExpect(status().isOk())
+            .andExpectAll(
+                jsonPath("$[0].categoryId").value(categoryId),
+                jsonPath("$[0].categoryName").value(categoryName)
             );
         //then
 
